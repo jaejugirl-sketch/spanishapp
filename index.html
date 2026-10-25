@@ -1,0 +1,1197 @@
+<title>하루 세 칸 스페인어</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* layout: 폰 우선 단일 컬럼 — 상단 연속일 띠, 카드 스택 본문, 하단 5칸 탭바 */
+  :root{
+    --bg:#F6F6F3; --surface:#FFFFFF; --surface-2:#EDEDE7; --surface-3:#E3E3DC;
+    --ink:#15181C; --ink-2:#585E68; --ink-3:#848A94; --line:#DADAD2;
+    --rojo:#A8392B; --rojo-ink:#8E3024; --rojo-soft:#F7E7E2;
+    --ochre:#8F6615; --ochre-soft:#F3EAD6; --green:#2C6549; --green-soft:#E0EDE5;
+    --font-display:'Gowun Batang','Nanum Myeongjo',Batang,serif;
+    --font-body:'IBM Plex Sans KR',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    --font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#101217; --surface:#181B21; --surface-2:#21252D; --surface-3:#2A2F39;
+      --ink:#E7E8EB; --ink-2:#9BA2AD; --ink-3:#767D88; --line:#2C313B;
+      --rojo:#E59A89; --rojo-ink:#F2BDAF; --rojo-soft:#2E1F1C;
+      --ochre:#D3A458; --ochre-soft:#2B2318; --green:#6CB391; --green-soft:#17251E;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#101217; --surface:#181B21; --surface-2:#21252D; --surface-3:#2A2F39;
+    --ink:#E7E8EB; --ink-2:#9BA2AD; --ink-3:#767D88; --line:#2C313B;
+    --rojo:#E59A89; --rojo-ink:#F2BDAF; --rojo-soft:#2E1F1C;
+    --ochre:#D3A458; --ochre-soft:#2B2318; --green:#6CB391; --green-soft:#17251E;
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:15px; line-height:1.6;
+    -webkit-font-smoothing:antialiased}
+  body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:30; background:var(--surface)}
+  h1,h2,h3{text-wrap:balance; margin:0}
+  p{margin:0}
+  button{font:inherit; color:inherit; cursor:pointer}
+  a{color:var(--rojo-ink); text-underline-offset:3px}
+
+  /* ── 상단 바 ── */
+  .topbar{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:var(--surface);
+    border-bottom:1px solid var(--line)}
+  .topbar-in{display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding-block:10px; padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+    max-width:620px; margin:0 auto}
+  .brand{font-family:var(--font-display); font-size:19px; font-weight:700; letter-spacing:-.01em}
+  .brand small{display:block; font-family:var(--font-body); font-size:11px; font-weight:400; color:var(--ink-3);
+    letter-spacing:.06em; text-transform:uppercase; line-height:1.3}
+  .streak{display:flex; align-items:baseline; gap:5px; background:var(--rojo-soft); color:var(--rojo-ink);
+    border-radius:999px; padding:5px 12px; white-space:nowrap}
+  .streak b{font-family:var(--font-mono); font-size:17px; font-variant-numeric:tabular-nums; line-height:1}
+  .streak span{font-size:11px; letter-spacing:.02em}
+
+  /* ── 본문 ── */
+  main{max-width:620px; margin:0 auto;
+    padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+    padding-block:18px calc(84px + env(safe-area-inset-bottom,0px))}
+  .view{display:flex; flex-direction:column; gap:14px}
+  .view[hidden]{display:none}   /* .view의 display:flex가 [hidden]을 덮어쓰므로 명시 */
+
+  .daystamp{font-family:var(--font-mono); font-size:11.5px; color:var(--ink-3); letter-spacing:.08em; text-transform:uppercase}
+  .viewhead{display:flex; flex-direction:column; gap:3px; margin-bottom:2px}
+  .viewhead h2{font-family:var(--font-display); font-size:23px; font-weight:700; letter-spacing:-.015em}
+  .viewhead p{font-size:13px; color:var(--ink-2)}
+
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px;
+    display:flex; flex-direction:column; gap:11px; min-width:0}
+  .card.flat{background:transparent; border-style:dashed}
+  .cell{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:start}
+  .cell-no{font-family:var(--font-mono); font-size:11px; color:var(--ink-3); border:1px solid var(--line);
+    border-radius:6px; width:22px; height:22px; display:grid; place-items:center; margin-top:2px}
+  .cell-body{min-width:0; display:flex; flex-direction:column; gap:4px}
+  .cell-kicker{font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3)}
+  .cell-title{font-size:15.5px; font-weight:600; line-height:1.45}
+  .cell-meta{font-size:12.5px; color:var(--ink-2)}
+  .cell.done .cell-title{color:var(--ink-3); text-decoration:line-through; text-decoration-thickness:1px}
+  .cell.done .cell-no{border-color:var(--green); color:var(--green)}
+
+  .btn{border:1px solid var(--line); background:var(--surface-2); border-radius:9px; padding:8px 13px;
+    font-size:13px; font-weight:500; white-space:nowrap}
+  .btn:hover{border-color:var(--ink-3)}
+  .btn.primary{background:var(--rojo); border-color:var(--rojo); color:#fff}
+  :root[data-theme="dark"] .btn.primary, :root:not([data-theme="light"]) .btn.primary{color:#0E1319}
+  @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .btn.primary{color:#fff}}
+  .btn.ghost{background:transparent}
+  .btn.tiny{padding:5px 9px; font-size:12px}
+  .btn:focus-visible, .tab:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible{
+    outline:2px solid var(--rojo); outline-offset:2px}
+  .btnrow{display:flex; flex-wrap:wrap; gap:8px}
+
+  .pill{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:500;
+    border-radius:999px; padding:3px 9px; background:var(--surface-2); color:var(--ink-2); white-space:nowrap}
+  .pill.lv1{background:var(--green-soft); color:var(--green)}
+  .pill.lv2{background:var(--rojo-soft); color:var(--rojo-ink)}
+  .pill.lv3{background:var(--ochre-soft); color:var(--ochre)}
+
+  .label{font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3)}
+  .es{font-size:15px; line-height:1.65}
+  .ko{font-size:13.5px; color:var(--ink-2)}
+  .hr{height:1px; background:var(--line); border:0; margin:2px 0}
+
+  .plist{display:flex; flex-direction:column; gap:9px; margin:0; padding:0; list-style:none}
+  .plist li{display:grid; grid-template-columns:auto 1fr; gap:9px; align-items:baseline; min-width:0}
+  .plist .q{font-family:var(--font-mono); font-size:11px; color:var(--rojo); padding-top:3px}
+  .phrase{display:flex; flex-direction:column; gap:2px; padding:9px 0; border-top:1px solid var(--line); min-width:0}
+  .phrase:first-of-type{border-top:0}
+  .model{background:var(--surface-2); border-radius:10px; padding:12px; font-size:14.5px; line-height:1.7}
+  .tip{font-size:13px; color:var(--ink-2); border-left:2px solid var(--ochre); padding-left:10px}
+
+  textarea{width:100%; min-height:96px; resize:vertical; background:var(--surface-2); color:var(--ink);
+    border:1px solid var(--line); border-radius:10px; padding:11px; font-family:var(--font-body); font-size:14.5px; line-height:1.6}
+  input[type=text], input[type=url], select{width:100%; background:var(--surface-2); color:var(--ink);
+    border:1px solid var(--line); border-radius:9px; padding:9px 11px; font-family:var(--font-body); font-size:14px}
+  .field{display:flex; flex-direction:column; gap:5px; min-width:0}
+  .feedback{background:var(--rojo-soft); border-radius:10px; padding:12px; font-size:14px; line-height:1.7; white-space:pre-wrap}
+
+  /* ── 단어 카드 ── */
+  .flash{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:26px 18px;
+    display:flex; flex-direction:column; gap:14px; align-items:center; text-align:center; min-height:238px; justify-content:center}
+  .flash .term{font-family:var(--font-display); font-size:28px; font-weight:700; line-height:1.3; letter-spacing:-.02em}
+  .flash .back{display:flex; flex-direction:column; gap:10px; align-items:center}
+  .flash .back .ko{font-size:16px; color:var(--ink)}
+  .flash .back .ex{font-size:14.5px; color:var(--ink-2); line-height:1.65}
+  .counter{font-family:var(--font-mono); font-size:11.5px; color:var(--ink-3); font-variant-numeric:tabular-nums;
+    display:flex; justify-content:space-between; letter-spacing:.04em}
+
+  /* ── 기록 ── */
+  .grid28{display:grid; grid-template-columns:repeat(7,1fr); gap:5px}
+  .grid28 div{aspect-ratio:1; border-radius:5px; background:var(--surface-2); border:1px solid var(--line)}
+  .grid28 div.part{background:var(--rojo-soft); border-color:var(--rojo-soft)}
+  .grid28 div.full{background:var(--rojo); border-color:var(--rojo)}
+  .grid28 div.today{outline:2px solid var(--ochre); outline-offset:1px}
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:10px}
+  .stat{display:flex; flex-direction:column; gap:1px}
+  .stat b{font-family:var(--font-mono); font-size:21px; font-variant-numeric:tabular-nums; line-height:1.2}
+  .stat span{font-size:11.5px; color:var(--ink-3)}
+  .boxbar{display:flex; gap:3px; align-items:flex-end; height:46px}
+  .boxbar div{flex:1; background:var(--rojo-soft); border-radius:3px 3px 0 0; min-height:3px; position:relative}
+  .boxlabels{display:flex; gap:3px; font-family:var(--font-mono); font-size:10px; color:var(--ink-3)}
+  .boxlabels span{flex:1; text-align:center}
+
+  .srcrow{display:flex; flex-direction:column; gap:5px; padding:12px 0; border-top:1px solid var(--line); min-width:0}
+  .srcrow:first-of-type{border-top:0}
+  .srctop{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  .srctop a{font-weight:600; font-size:14.5px; text-decoration:none}
+  .srctop a:hover{text-decoration:underline}
+  .saved{display:flex; flex-direction:column; gap:3px; padding:11px 0; border-top:1px solid var(--line); min-width:0}
+  .saved .t{font-weight:600; font-size:14px; overflow-wrap:anywhere}
+  .saved .m{font-size:12.5px; color:var(--ink-2); overflow-wrap:anywhere}
+  .empty{font-size:13.5px; color:var(--ink-3); padding:6px 0}
+
+  /* ── 탭바 ── */
+  .tabbar{position:fixed; left:0; right:0; bottom:0; z-index:25; background:var(--surface); border-top:1px solid var(--line);
+    padding-bottom:env(safe-area-inset-bottom,0px)}
+  .tabbar-in{display:grid; grid-template-columns:repeat(5,1fr); gap:2px; max-width:620px; margin:0 auto;
+    padding-block:7px; padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .tab{background:none; border:0; border-radius:9px; padding:6px 2px; display:flex; flex-direction:column;
+    align-items:center; gap:3px; color:var(--ink-3); font-size:11.5px; font-weight:500}
+  .tab b{font-family:var(--font-mono); font-size:13px; font-weight:500; font-variant-numeric:tabular-nums}
+  .tab[aria-current="true"]{color:var(--rojo-ink); background:var(--rojo-soft)}
+  .tab .dot{width:5px; height:5px; border-radius:50%; background:var(--ochre)}
+
+  .note{font-size:12.5px; color:var(--ink-3); line-height:1.6}
+  select.pickers{max-width:100%}
+  @media (min-width:560px){ .cell{gap:14px} }
+  @media (prefers-reduced-motion: no-preference){
+    .view{animation:fade .22s ease-out}
+    @keyframes fade{from{opacity:.55}to{opacity:1}}
+  }
+</style>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">하루 세 칸 스페인어<small>Hablar · Leer · Palabras</small></div>
+    <div class="streak" id="streakChip"><b id="streakNum">0</b><span>일 연속</span></div>
+  </div>
+</header>
+
+<main>
+  <!-- ══ 오늘 ══ -->
+  <section class="view" id="view-today">
+    <div class="viewhead">
+      <div class="daystamp" id="dayStamp">—</div>
+      <h2>오늘의 세 칸</h2>
+      <p>말하기 7분 · 읽기 8분 · 단어 5분. 다 못 하는 날은 한 칸만 해도 연속일은 끊기지 않습니다.</p>
+    </div>
+
+    <div class="card">
+      <div class="cell" id="cell-speak">
+        <div class="cell-no">1</div>
+        <div class="cell-body">
+          <div class="cell-kicker">말하기 · 7분</div>
+          <div class="cell-title" id="todaySpeakTitle">—</div>
+          <div class="cell-meta" id="todaySpeakMeta">—</div>
+        </div>
+        <button class="btn tiny" data-go="speak">열기</button>
+      </div>
+      <hr class="hr">
+      <div class="cell" id="cell-read">
+        <div class="cell-no">2</div>
+        <div class="cell-body">
+          <div class="cell-kicker">읽기 · 8분</div>
+          <div class="cell-title" id="todayReadTitle">—</div>
+          <div class="cell-meta" id="todayReadMeta">—</div>
+        </div>
+        <button class="btn tiny" data-go="read">열기</button>
+      </div>
+      <hr class="hr">
+      <div class="cell" id="cell-vocab">
+        <div class="cell-no">3</div>
+        <div class="cell-body">
+          <div class="cell-kicker">단어 · 5분</div>
+          <div class="cell-title" id="todayVocabTitle">—</div>
+          <div class="cell-meta" id="todayVocabMeta">—</div>
+        </div>
+        <button class="btn tiny" data-go="vocab">열기</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="label">발음 — 다섯 줄로 끝</div>
+      <ul class="plist">
+        <li><span class="q">1</span><span class="es">모음은 늘 같은 소리 — a 아 · e 에 · i 이 · o 오 · u 우. 영어처럼 변하지 않습니다.</span></li>
+        <li><span class="q">2</span><span class="es">h는 소리가 없습니다 — hola 올라, hijo 이호.</span></li>
+        <li><span class="q">3</span><span class="es">j와 ge/gi는 목에서 긁는 ㅎ — jueves 후에베스, gestión 헤스티온.</span></li>
+        <li><span class="q">4</span><span class="es">ll은 ㅈ/ㅇ, ñ은 니 — llevo 예보/제보, español 에스파뇰.</span></li>
+        <li><span class="q">5</span><span class="es">강세는 끝에서 두 번째 음절. 예외는 á é í ó ú로 표시됩니다 — función 푼시온.</span></li>
+      </ul>
+      <p class="note">스페인어는 쓴 대로 읽습니다. 이 다섯 줄이면 처음 보는 단어도 소리 내어 읽을 수 있습니다.</p>
+    </div>
+
+    <div class="card flat">
+      <div class="label">바쁜 날</div>
+      <p class="note">회의가 안 끝나거나 하원이 급한 날. 단어 다섯 장만 넘기면 그날은 한 칸으로 인정하고 연속일을 지킵니다. 0으로 돌아가는 것보다 1칸이 낫습니다.</p>
+      <div class="btnrow">
+        <button class="btn" data-go="vocab">단어 5장만 하기</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="label">이번 주 흐름</div>
+      <div id="weekPlan" class="note"></div>
+    </div>
+  </section>
+
+  <!-- ══ 말하기 ══ -->
+  <section class="view" id="view-speak" hidden>
+    <div class="viewhead">
+      <h2>말하기</h2>
+      <p>실제로 겪는 상황만 모았습니다. 문법 한 조각을 보고, 소리 내어 60초 답한 뒤, 적어서 피드백을 받으세요.</p>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label class="label" for="scenarioPick">상황 고르기</label>
+        <select id="scenarioPick" class="pickers"></select>
+      </div>
+      <div class="note" id="scenarioWhen">—</div>
+    </div>
+
+    <div class="card">
+      <div class="label">오늘의 문법 한 조각</div>
+      <div class="cell-title" id="gramTitle">—</div>
+      <p class="ko" id="gramPoint">—</p>
+      <div id="gramEx"></div>
+      <p class="tip" id="gramDrill">—</p>
+    </div>
+
+    <div class="card">
+      <div class="label">질문 세 개 — 소리 내어 답하기</div>
+      <ul class="plist" id="scenarioPrompts"></ul>
+      <hr class="hr">
+      <div class="label">핵심 표현</div>
+      <div id="scenarioPhrases"></div>
+      <hr class="hr">
+      <div class="label">모범 답변 — 베껴 말해보기</div>
+      <div class="model" id="scenarioModel">—</div>
+      <p class="tip" id="scenarioTip">—</p>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label class="label" for="speakAnswer">내 답변 적어보기</label>
+        <textarea id="speakAnswer" placeholder="Escríbalo en español. 틀려도 그대로 적는 게 낫습니다."></textarea>
+      </div>
+      <div class="btnrow">
+        <button class="btn primary" id="speakCoachBtn">피드백 받기</button>
+        <button class="btn" id="speakDoneBtn">1칸 완료</button>
+      </div>
+      <div class="feedback" id="speakFeedback" hidden></div>
+      <p class="note" id="speakCoachNote" hidden></p>
+    </div>
+  </section>
+
+  <!-- ══ 읽기 ══ -->
+  <section class="view" id="view-read" hidden>
+    <div class="viewhead">
+      <h2>읽기</h2>
+      <p>다 읽지 않습니다. 8분 안에 ① 제목과 첫 단락 ② 표현 세 개 ③ 한 문장 요약까지만.</p>
+    </div>
+
+    <div class="card">
+      <div class="label">오늘 읽을 곳</div>
+      <div id="todaySource"></div>
+    </div>
+
+    <div class="card">
+      <div class="label">읽고 남기기</div>
+      <div class="field">
+        <label class="label" for="artTitle">제목</label>
+        <input type="text" id="artTitle" placeholder="기사 제목을 그대로">
+      </div>
+      <div class="field">
+        <label class="label" for="artUrl">링크</label>
+        <input type="url" id="artUrl" placeholder="https://">
+      </div>
+      <div class="field">
+        <label class="label" for="artSummary">한 문장 스페인어 요약</label>
+        <textarea id="artSummary" style="min-height:66px" placeholder="El artículo dice que ..."></textarea>
+      </div>
+      <div class="field">
+        <label class="label" for="artWords">새 표현 세 개 — 쉼표로</label>
+        <input type="text" id="artWords" placeholder="convocatoria, plazo, derechos">
+      </div>
+      <div class="btnrow">
+        <button class="btn primary" id="saveArtBtn">보관함에 넣고 1칸 완료</button>
+        <button class="btn" id="summaryCoachBtn">요약 문장만 봐주기</button>
+      </div>
+      <div class="feedback" id="readFeedback" hidden></div>
+    </div>
+
+    <div class="card">
+      <div class="label">보관함 <span id="libCount" class="pill"></span></div>
+      <div id="libList"></div>
+    </div>
+
+    <div class="card">
+      <div class="label">소스 목록 — 열두 곳</div>
+      <p class="note">처음 달은 학습자용 뉴스로, 익숙해지면 문화·문학·학술로. 난이도 순이 아니라 요일 순으로 돌립니다.</p>
+      <div id="sourceList"></div>
+    </div>
+  </section>
+
+  <!-- ══ 단어 ══ -->
+  <section class="view" id="view-vocab" hidden>
+    <div class="viewhead">
+      <h2>단어</h2>
+      <p>맞히면 1·3·7·14·30일 뒤에 다시 나옵니다. 하루 열두 장이면 충분합니다.</p>
+    </div>
+
+    <div class="counter"><span id="vocabProgress">—</span><span id="vocabDeckName">—</span></div>
+    <div class="flash" id="flashCard">
+      <div class="term" id="flashTerm">—</div>
+      <div class="back" id="flashBack" hidden>
+        <div class="ko" id="flashKo"></div>
+        <div class="ex" id="flashEx"></div>
+      </div>
+      <div class="btnrow" id="flashBtns"></div>
+    </div>
+
+    <div class="card">
+      <div class="label">내가 모은 표현</div>
+      <p class="note">읽기 보관함에 넣은 표현도 여기 섞여 나옵니다.</p>
+      <div id="myWordsList"></div>
+    </div>
+
+    <div class="card">
+      <div class="label">덱 보기</div>
+      <div class="field">
+        <select id="deckPick" class="pickers"></select>
+      </div>
+      <div id="deckList"></div>
+    </div>
+  </section>
+
+  <!-- ══ 기록 ══ -->
+  <section class="view" id="view-log" hidden>
+    <div class="viewhead">
+      <h2>기록</h2>
+      <p>잘한 날을 세는 게 아니라, 끊기지 않은 날을 셉니다.</p>
+    </div>
+
+    <div class="card">
+      <div class="stats">
+        <div class="stat"><b id="statStreak">0</b><span>연속일</span></div>
+        <div class="stat"><b id="statBest">0</b><span>최장</span></div>
+        <div class="stat"><b id="statFull">0</b><span>세 칸 완료</span></div>
+        <div class="stat"><b id="statWords">0</b><span>익힌 단어</span></div>
+        <div class="stat"><b id="statArts">0</b><span>모은 아티클</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="label">최근 4주</div>
+      <div class="grid28" id="grid28"></div>
+      <p class="note">진한 칸은 세 칸 다 한 날, 연한 칸은 한두 칸 한 날.</p>
+    </div>
+
+    <div class="card">
+      <div class="label">단어 상자</div>
+      <div class="boxbar" id="boxBar"></div>
+      <div class="boxlabels"><span>1일</span><span>3일</span><span>7일</span><span>14일</span><span>30일</span><span>졸업</span></div>
+      <p class="note">오른쪽으로 갈수록 오래 기억에 남은 단어입니다.</p>
+    </div>
+
+    <div class="card flat">
+      <div class="label">저장 상태</div>
+      <p class="note" id="syncNote">확인 중…</p>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar">
+  <div class="tabbar-in">
+    <button class="tab" data-tab="today" aria-current="true"><b id="tabTodayNum">0</b>오늘</button>
+    <button class="tab" data-tab="speak"><span class="dot" id="tabSpeakDot" hidden></span>말하기</button>
+    <button class="tab" data-tab="read"><span class="dot" id="tabReadDot" hidden></span>읽기</button>
+    <button class="tab" data-tab="vocab"><b id="tabVocabNum">0</b>단어</button>
+    <button class="tab" data-tab="log">기록</button>
+  </div>
+</nav>
+
+<script>
+/* ════════ 교과 내용 — 업무(번역원·스페인어권 출판), 논문(판소리·국극), 일상 ════════ */
+
+const SCENARIOS = [
+  { id:'org-intro', group:'업무', title:'우리 기관 1분 소개',
+    when:'스페인·중남미 문학 기관 담당자와의 첫 화상회의. 번역원이 무슨 일을 하는 곳인지 1분 안에 설명해야 하는 상황.',
+    prompts:['¿A qué se dedica su institución?','¿A quién financian y cómo se solicita la ayuda?','¿Qué ha cambiado en los últimos cinco años?'],
+    phrases:[
+      ['Somos una institución pública del Ministerio de Cultura de Corea.','한국 문화체육관광부 소속 공공기관입니다.'],
+      ['Financiamos traducciones y apoyamos la publicación en el extranjero.','번역을 지원하고 해외 출간을 돕습니다.'],
+      ['También tenemos una academia que forma a traductores.','번역가를 양성하는 아카데미도 운영합니다.'],
+      ['Somos el puente entre los escritores coreanos y las editoriales extranjeras.','한국 작가와 해외 출판사를 잇는 다리입니다.'],
+      ['Nuestro trabajo ocurre antes de que el libro llegue a la librería.','저희 일은 책이 서점에 놓이기 전 단계에 있습니다.']],
+    model:"Somos una institución pública del Ministerio de Cultura de Corea. Nuestro trabajo es que la literatura coreana se lea en otros idiomas. Financiamos traducciones, apoyamos la publicación en el extranjero y organizamos programas de intercambio para escritores y traductores. También formamos traductores en nuestra propia academia. Somos el puente entre los escritores coreanos y las editoriales extranjeras.",
+    tip:'"Somos ~"로 열면 문장이 쉽게 시작됩니다. nuestro/nuestra는 뒤 명사의 성에 맞춥니다 — nuestro trabajo, nuestra academia. 기관 공식 명칭은 영어로 말해도 괜찮습니다.' },
+
+  { id:'grant-scheme', group:'업무', title:'번역·출판 지원사업 설명',
+    when:'마드리드나 멕시코 출판사가 "지원금은 어떻게 받나"를 물을 때. 한국어 공고문의 논리를 스페인어로 옮기는 연습.',
+    prompts:['¿Cómo funciona la ayuda a la traducción?','¿Cuándo es la convocatoria y qué documentos piden?','¿Pueden solicitarla las editoriales extranjeras?'],
+    phrases:[
+      ['La convocatoria se abre dos veces al año.','공모는 1년에 두 번 열립니다.'],
+      ['Pueden solicitarla tanto el traductor como la editorial.','번역가와 출판사 모두 신청할 수 있습니다.'],
+      ['El pago se hace en dos plazos.','지급은 두 번에 나눠 집행됩니다.'],
+      ['Necesitamos el contrato con el titular de los derechos.','저작권자와의 계약서가 필요합니다.'],
+      ['Le mando las bases por correo hoy mismo.','오늘 안에 공고 요건을 메일로 보내 드리겠습니다.']],
+    model:"La ayuda funciona así: la convocatoria se abre dos veces al año y pueden solicitarla tanto el traductor como la editorial. Pedimos una muestra de traducción, el currículum del traductor y el contrato con el titular de los derechos. Si la solicitud se aprueba, el pago se hace en dos plazos. Le mando las bases por correo hoy mismo y, si tiene dudas, me escribe.",
+    tip:'사무적인 약속은 현재시제로 충분합니다 — "Le mando ~", "me escribe". solicitar(신청하다) · convocatoria(공모) · plazo(기한·회차) 세 단어가 업무 스페인어의 축입니다.' },
+
+  { id:'video-open', group:'업무', title:'화상회의 열기와 스몰토크',
+    when:'시차를 넘겨 잡은 회의. 처음 3분을 매끄럽게 넘기는 표현들.',
+    prompts:['¿Me oyen bien?','¿Le viene bien esta hora? ¿Cuánta diferencia hay?','¿Empezamos con una presentación rápida?'],
+    phrases:[
+      ['Buenas tardes desde Seúl, aquí son las nueve de la noche.','서울에서 인사드립니다. 여기는 밤 9시입니다.'],
+      ['¿Me oyen bien?','제 목소리 잘 들리시나요?'],
+      ['Voy a compartir mi pantalla.','화면 공유하겠습니다.'],
+      ['Perdón, se ha cortado un momento. ¿Puede repetirlo?','잠깐 끊겼습니다. 다시 말씀해 주시겠어요?'],
+      ['Antes de empezar, ¿nos presentamos brevemente?','시작 전에 간단히 소개부터 할까요?']],
+    model:"Buenas tardes desde Seúl — aquí son las nueve de la noche, así que gracias por ajustar la hora. ¿Me oyen bien? Antes de entrar en materia, ¿nos presentamos brevemente? Voy a compartir mi pantalla en un momento; la agenda está en el chat. Si se corta el sonido, me lo dicen sin problema.",
+    tip:'시간은 "son las nueve", 1시만 "es la una". 회선이 끊길 때의 "se ha cortado"는 통째로 외워 두세요.' },
+
+  { id:'schedule', group:'업무', title:'일정 조율과 후속 약속',
+    when:'회의 끝 3분. 메일로만 쓰던 문장을 입으로 말해 보는 연습.',
+    prompts:['¿Qué día le viene mejor la semana que viene?','¿Quién prepara el borrador?','¿Lo dejamos para después de la feria?'],
+    phrases:[
+      ['¿Le viene bien el jueves por la mañana?','목요일 오전 괜찮으신가요?'],
+      ['Lo confirmo mañana y le aviso.','내일 확인해서 알려드리겠습니다.'],
+      ['Propongo dejarlo para después de la feria.','도서전 이후로 미루는 것을 제안합니다.'],
+      ['Yo preparo el borrador y usted lo revisa.','제가 초안을 준비하고, 검토를 부탁드립니다.'],
+      ['Resumo lo acordado en un correo.','합의된 내용을 메일로 정리하겠습니다.']],
+    model:"Entonces resumo lo acordado: yo preparo el borrador esta semana y usted lo revisa antes de la feria. Si le viene bien, hacemos la siguiente reunión el jueves por la mañana, su hora. Lo confirmo mañana por correo, con los dos puntos que quedan abiertos. ¿Le parece bien así?",
+    tip:'"¿Le parece bien?"로 닫으면 상대가 "sí"만 해도 회의가 끝납니다. usted 대화에서는 동사가 3인칭 — usted revisa, le parece, le aviso.' },
+
+  { id:'book-fair', group:'업무', title:'도서전 부스에서 출판사 만나기',
+    when:'과달라하라 FIL이나 마드리드 LIBER. 10분 안에 작품을 소개하고 연락처를 넘기는 상황.',
+    prompts:['¿Qué títulos recomienda para nuestro catálogo?','¿Hay muestra de traducción en español?','¿Con quién hablo sobre los derechos?'],
+    phrases:[
+      ['Le traigo tres títulos que encajan con su catálogo.','귀사 목록에 맞는 세 작품을 가져왔습니다.'],
+      ['Tenemos una muestra de veinte páginas en español.','스페인어 샘플 20쪽이 있습니다.'],
+      ['Los derechos los gestiona una agencia, le paso el contacto.','저작권은 에이전시가 관리합니다. 연락처를 드리겠습니다.'],
+      ['Esta novela ya salió en francés y en alemán.','이 소설은 프랑스어와 독일어로 이미 출간되었습니다.'],
+      ['¿Le dejo el catálogo y seguimos por correo?','카탈로그를 드리고 메일로 이어가도 될까요?']],
+    model:"Le traigo tres títulos que encajan bien con su catálogo. El primero es una novela corta que ya salió en francés y en alemán, y tenemos una muestra de veinte páginas en español. Los derechos los gestiona una agencia de Seúl; le paso el contacto hoy. Le dejo el catálogo y, si le interesa alguno, seguimos por correo la semana que viene.",
+    tip:'"encajar con ~"(~에 맞다)는 출판 미팅에서 가장 자주 쓰는 동사입니다. "ya salió en ~" 한 문장으로 해외 출간 실적을 증명할 수 있습니다.' },
+
+  { id:'research-intro', group:'논문', title:'내 연구 1분 소개',
+    when:'학회나 저녁 자리에서 "무슨 연구를 하세요?"를 받았을 때.',
+    prompts:['¿Sobre qué investiga?','¿Por qué eligió ese tema?','¿En qué punto está la tesis?'],
+    phrases:[
+      ['Investigo el pansori, la ópera narrativa tradicional de Corea.','한국의 전통 서사 음악극인 판소리를 연구합니다.'],
+      ['Mi tesis trata del Jeokbyeokga y su relación con una novela china clásica.','제 논문은 적벽가와 중국 고전 소설의 관계를 다룹니다.'],
+      ['También estudio el teatro de mujeres de los años cincuenta.','1950년대 여성국극도 연구합니다.'],
+      ['Me interesa cómo una historia cambia al cruzar una frontera.','이야기가 국경을 넘을 때 어떻게 변하는지에 관심이 있습니다.'],
+      ['Ahora estoy escribiendo el tercer capítulo.','지금 3장을 쓰고 있습니다.']],
+    model:"Investigo el pansori, que es la ópera narrativa tradicional de Corea: una cantante y un tambor, nada más, durante horas. Mi tesis trata de una pieza, el Jeokbyeokga, y de su relación con una novela china clásica. Lo que me interesa es cómo una misma historia cambia al cruzar una frontera. También estudio el teatro de mujeres de los años cincuenta en Corea. Ahora estoy escribiendo el tercer capítulo.",
+    tip:'전공어는 그대로 쓰고 뒤에 "que es ~"로 한 줄 설명을 붙이면 됩니다. 진행 상황은 estoy + -ando/-iendo 하나로 다 말할 수 있습니다.' },
+
+  { id:'pansori', group:'논문', title:'판소리를 처음 듣는 사람에게 설명',
+    when:'스페인어권 동료가 판소리 영상을 보고 "이게 뭐냐"고 물을 때.',
+    prompts:['¿Qué es exactamente el pansori?','¿Se parece al flamenco o a la ópera?','¿Cuánto dura una función?'],
+    phrases:[
+      ['Son dos personas: una cantante y un tambor.','소리꾼 한 명과 북 하나, 두 사람입니다.'],
+      ['La cantante narra, canta y hace todos los personajes.','소리꾼이 서술하고, 노래하고, 모든 인물을 연기합니다.'],
+      ['El público responde en voz alta; se llama chuimsae.','관객이 소리로 호응합니다. 추임새라고 합니다.'],
+      ['Una función completa puede durar cinco horas.','완창은 다섯 시간까지 갑니다.'],
+      ['Se parece más al flamenco que a la ópera, por la voz rota.','갈라진 목소리 때문에 오페라보다 플라멩코에 가깝습니다.']],
+    model:"El pansori son dos personas en el escenario: una cantante y un tambor, nada más. La cantante narra la historia, canta y hace todos los personajes, y el público responde en voz alta — eso se llama chuimsae. Una función completa puede durar cinco horas. Si busca una comparación, se parece más al flamenco que a la ópera: la voz rota no es un defecto, es el objetivo.",
+    tip:'비교는 "se parece más a A que a B" 하나로 끝납니다. durar(지속되다)로 길이를, llamarse(~라고 불린다)로 용어를 소개하세요.' },
+
+  { id:'gukgeuk', group:'논문', title:'여성국극 설명',
+    when:'남성 역까지 여성이 맡은 1950년대 극장. 젠더 연구 맥락에서 설명하는 상황.',
+    prompts:['¿Qué era el gukgeuk femenino?','¿Por qué desapareció?','¿Por qué le interesa hoy?'],
+    phrases:[
+      ['Era un teatro en el que todos los papeles los hacían mujeres.','모든 역을 여성이 맡은 극장이었습니다.'],
+      ['Tuvo mucho éxito en los años cincuenta.','1950년대에 큰 인기를 누렸습니다.'],
+      ['Desapareció cuando llegaron el cine y la televisión.','영화와 텔레비전이 들어오면서 사라졌습니다.'],
+      ['Las actrices tenían un público de mujeres muy fiel.','배우들에게는 매우 충성스러운 여성 관객이 있었습니다.'],
+      ['Me interesa quién decide qué se conserva.','무엇을 남길지 누가 정하는지에 관심이 있습니다.']],
+    model:"El gukgeuk femenino era un teatro de los años cincuenta en el que todos los papeles, también los masculinos, los hacían mujeres. Tuvo mucho éxito, con un público de mujeres muy fiel, y desapareció bastante rápido cuando llegaron el cine y la televisión. Casi no se conserva material. Lo que me interesa no es solo el género: es quién decide qué se conserva y qué se deja perder.",
+    tip:'배경과 상태는 era/tenía(불완료), 사건은 tuvo/desapareció(완료). 두 과거의 구분이 이 설명 전체를 지탱합니다.' },
+
+  { id:'qna', group:'논문', title:'학회 질의응답',
+    when:'발표 후 질문을 못 알아들었거나, 반론이 들어왔을 때.',
+    prompts:['¿Puede repetir la pregunta, por favor?','¿No cree que su corpus es demasiado pequeño?','¿Cómo responde a esa crítica?'],
+    phrases:[
+      ['Perdón, ¿puede repetir la pregunta más despacio?','죄송합니다, 질문을 조금 천천히 다시 해 주시겠어요?'],
+      ['Si le entiendo bien, me pregunta por el corpus.','제가 이해한 게 맞다면, 자료 범위를 물으신 거죠.'],
+      ['Es una observación justa.','타당한 지적입니다.'],
+      ['Donde no estoy de acuerdo es en la conclusión.','제가 동의하지 않는 지점은 결론입니다.'],
+      ['No tengo el dato aquí, se lo mando después.','지금 수치가 없습니다. 나중에 보내 드리겠습니다.']],
+    model:"Gracias por la pregunta. Si le entiendo bien, me pregunta si el corpus es demasiado pequeño. Es una observación justa: trabajo con cinco grabaciones, no con cincuenta. Donde no estoy de acuerdo es en la conclusión, porque mi argumento no es estadístico, es sobre cómo se transmite una versión concreta. El dato exacto no lo tengo aquí; se lo mando por correo después de la sesión.",
+    tip:'"Si le entiendo bien, me pregunta por ~"는 못 알아들은 질문도 되살립니다. 인정한 다음 "Donde no estoy de acuerdo es ~"로 쟁점을 옮기세요 — 보고서의 재구성과 같은 동작입니다.' },
+
+  { id:'about-me', group:'일상', title:'자기소개와 가족',
+    when:'학회 저녁 자리, 택시, 호스트 가족. 가장 자주 반복되는 3분.',
+    prompts:['¿De dónde es y a qué se dedica?','¿Tiene familia? ¿Hijos?','¿Cómo lleva el trabajo y la casa?'],
+    phrases:[
+      ['Soy de Seúl y trabajo en una institución pública de literatura.','서울에서 왔고, 문학 관련 공공기관에서 일합니다.'],
+      ['Tengo un hijo de siete años.','일곱 살 아이가 있습니다.'],
+      ['Estudio español por la noche, cuando la casa está tranquila.','집이 조용해지는 밤에 스페인어를 공부합니다.'],
+      ['Llevo tres meses estudiando, perdone los errores.','공부한 지 세 달 됐습니다. 실수는 양해해 주세요.'],
+      ['Hablo despacio, pero entiendo bastante.','천천히 말하지만 이해는 꽤 합니다.']],
+    model:"Soy de Seúl. Trabajo en una institución pública de literatura, en la parte de políticas y planificación, y además estoy haciendo un doctorado. Tengo un hijo de siete años, así que estudio español por la noche, cuando la casa está tranquila. Llevo tres meses estudiando; hablo despacio, pero entiendo bastante. Si voy muy lento, dígamelo.",
+    tip:'"Llevo tres meses estudiando" — llevar + 기간 + -ando는 자기소개의 핵심 틀입니다. 직업은 trabajo en ~, 아이는 tengo un hijo de ~ años.' },
+
+  { id:'order', group:'일상', title:'카페·식당에서 주문하기',
+    when:'마드리드 공항 환승, 호텔 1층 바. 10초 안에 끝나야 하는 말.',
+    prompts:['¿Qué le pongo?','¿Para tomar aquí o para llevar?','¿Algo más?'],
+    phrases:[
+      ['Un café con leche, por favor.','카페라테 하나 주세요.'],
+      ['Para llevar, gracias.','테이크아웃이요, 감사합니다.'],
+      ['¿Tiene algo sin carne?','고기 없는 메뉴가 있나요?'],
+      ['¿Me trae la cuenta, por favor?','계산서 가져다주시겠어요?'],
+      ['Con tarjeta, si se puede.','가능하면 카드로요.']],
+    model:"Buenos días. Un café con leche y un croissant, por favor. Para llevar. — ¿Algo más? — No, nada más, gracias. ¿Se puede pagar con tarjeta?",
+    tip:'주문은 "명사 + por favor"면 끝납니다. 동사 없이도 완벽히 통합니다. 계산은 "¿Me trae la cuenta?" 하나만 외우면 됩니다.' },
+
+  { id:'directions', group:'일상', title:'길 묻기와 택시',
+    when:'호텔에서 회의장까지. 지도를 보여줘도 말은 필요합니다.',
+    prompts:['¿Cómo llego a esta dirección?','¿Está lejos para ir andando?','¿Me puede llevar al aeropuerto?'],
+    phrases:[
+      ['Perdone, ¿cómo llego a esta dirección?','죄송한데, 이 주소까지 어떻게 갑니까?'],
+      ['¿Está lejos para ir andando?','걸어가기에 먼가요?'],
+      ['Voy al aeropuerto, a la terminal cuatro.','공항 4터미널로 갑니다.'],
+      ['¿Puede escribirlo aquí, por favor?','여기에 적어 주시겠어요?'],
+      ['Déjeme aquí, por favor.','여기서 내려 주세요.']],
+    model:"Perdone, ¿cómo llego a esta dirección? ¿Está lejos para ir andando o mejor cojo el metro? — Está a diez minutos. — Perfecto, gracias. Y si cojo un taxi, ¿cuánto puede costar más o menos?",
+    tip:'길 묻기는 Perdone로 열고 "¿cómo llego a ~?"로 묻습니다. 스페인은 coger el metro, 중남미는 tomar el metro를 씁니다 — 지역을 보고 고르세요.' },
+
+  { id:'taste', group:'일상', title:'책·음악 취향 이야기',
+    when:'저녁 자리에서 일 이야기가 끝난 다음의 10분.',
+    prompts:['¿Qué está leyendo ahora?','¿Qué autor en español le gusta?','¿Qué libro coreano me recomienda?'],
+    phrases:[
+      ['Ahora estoy leyendo una novela corta.','지금은 짧은 소설을 읽고 있습니다.'],
+      ['Me gusta más la frase que la trama.','줄거리보다 문장을 좋아합니다.'],
+      ['Leo despacio en español, pero lo disfruto.','스페인어는 천천히 읽지만 즐겁습니다.'],
+      ['No le recomendaría los libros más famosos.','가장 유명한 책을 권하지는 않겠습니다.'],
+      ['Le mando el título por mensaje.','제목을 메시지로 보내 드리겠습니다.']],
+    model:"Ahora estoy leyendo una novela corta coreana, otra vez, porque me gusta más la frase que la trama. En español leo despacio, pero lo disfruto: de momento leo cuentos, no novelas largas. Si quiere un libro coreano, no le recomendaría los más famosos; empezaría por algo más silencioso. Le mando el título por mensaje.",
+    tip:'"Me gusta más A que B"로 취향을 한 줄로 말하면 대화가 이어집니다. gustar의 주어는 좋아하는 대상 — me gusta la frase, me gustan las frases.' }
+];
+
+/* 문법 한 조각 — 날짜 기준으로 하루 하나씩 돌아갑니다 */
+const GRAMMAR = [
+  { id:'g01', title:'ser와 estar',
+    point:'ser는 신분·성질(변하지 않는 것), estar는 상태·위치(지금 그런 것).',
+    ex:[['Somos una institución pública.','우리는 공공기관입니다. — 신분'],
+        ['Estoy en Seúl esta semana.','이번 주에는 서울에 있습니다. — 위치'],
+        ['La casa está tranquila.','집이 조용합니다. — 지금의 상태']],
+    drill:'"저는 피곤합니다"는 soy가 아니라 estoy cansada. 소리 내어 두 번.' },
+  { id:'g02', title:'명사의 성과 관사',
+    point:'-o는 대개 남성(el), -a는 대개 여성(la). 형용사와 관사가 명사를 따라갑니다.',
+    ex:[['el contrato firmado','서명된 계약서'],
+        ['la convocatoria abierta','열린 공모'],
+        ['los derechos de autor','저작권']],
+    drill:'문제/주제는 예외 — el problema, el tema. 통째로 외웁니다.' },
+  { id:'g03', title:'현재형 -ar 동사',
+    point:'trabajar → trabajo / trabaja / trabajamos. 주어 대명사는 보통 생략합니다.',
+    ex:[['Trabajo en una institución pública.','공공기관에서 일합니다.'],
+        ['¿Usted trabaja con editoriales?','출판사와 일하시나요?'],
+        ['Financiamos traducciones.','번역을 지원합니다.']],
+    drill:'estudiar·mandar·preparar를 -o / -a / -amos로 바꿔 말해 보기.' },
+  { id:'g04', title:'현재형 -er / -ir 동사',
+    point:'-er와 -ir는 1인칭 -o, 3인칭 -e, 1인칭 복수만 -emos / -imos로 갈립니다.',
+    ex:[['Leo despacio, pero entiendo.','천천히 읽지만 이해합니다.'],
+        ['¿Me escribe esta semana?','이번 주에 메일 주시겠어요?'],
+        ['Vivimos en Seúl.','서울에 삽니다.']],
+    drill:'leer·escribir·vivir 세 개만 -o / -e로 입에 붙이면 됩니다.' },
+  { id:'g05', title:'gustar — 주어가 바뀝니다',
+    point:'좋아하는 대상이 주어입니다. 대상이 복수면 gustan.',
+    ex:[['Me gusta la frase.','문장이 좋습니다.'],
+        ['Me gustan las novelas cortas.','짧은 소설들이 좋습니다.'],
+        ['¿Le gusta el pansori?','판소리 좋아하시나요?']],
+    drill:'interesar도 같은 구조 — Me interesa el teatro. 두 문장 만들어 말하기.' },
+  { id:'g06', title:'가까운 미래 ir a + 동사원형',
+    point:'미래시제를 배우기 전에 이것만으로 충분합니다.',
+    ex:[['Voy a compartir mi pantalla.','화면 공유하겠습니다.'],
+        ['Vamos a empezar.','시작하겠습니다.'],
+        ['Le voy a mandar las bases.','공고 요건을 보내 드리겠습니다.']],
+    drill:'오늘 회의에서 할 일 세 개를 voy a ~로 말해 보기.' },
+  { id:'g07', title:'진행형 estar + -ando / -iendo',
+    point:'지금 하고 있는 일. -ar는 -ando, -er/-ir는 -iendo.',
+    ex:[['Estoy escribiendo el tercer capítulo.','3장을 쓰고 있습니다.'],
+        ['Estamos preparando la convocatoria.','공모를 준비하고 있습니다.'],
+        ['¿Qué está leyendo ahora?','지금 무엇을 읽고 계세요?']],
+    drill:'논문 진행 상황을 estoy ~로 한 문장. 그게 학회 대화의 절반입니다.' },
+  { id:'g08', title:'두 개의 과거 — 사건과 배경',
+    point:'끝난 사건은 완료과거(tuvo, desapareció), 배경·상태는 불완료과거(era, tenía).',
+    ex:[['Tuvo mucho éxito en los años cincuenta.','1950년대에 큰 인기를 누렸습니다. — 사건'],
+        ['Era un teatro de mujeres.','여성들의 극장이었습니다. — 배경'],
+        ['Las actrices tenían un público fiel.','배우들에게는 충성스러운 관객이 있었습니다. — 상태']],
+    drill:'여성국극 설명을 era 두 문장 + tuvo 한 문장으로 다시 말해 보기.' },
+  { id:'g09', title:'usted — 업무의 기본값',
+    point:'존대는 usted. 동사는 3인칭 단수를 씁니다. 복수는 ustedes.',
+    ex:[['¿Le viene bien el jueves?','목요일 괜찮으신가요?'],
+        ['¿Me oyen bien?','잘 들리시나요? — ustedes'],
+        ['Usted lo revisa y yo lo mando.','검토해 주시면 제가 보내겠습니다.']],
+    drill:'tú로 아는 문장을 usted로 바꿔 보기 — ¿tienes? → ¿tiene?' },
+  { id:'g10', title:'tener로 말하는 것들',
+    point:'나이·필요·의무가 모두 tener입니다. 영어의 be와 다릅니다.',
+    ex:[['Tengo un hijo de siete años.','일곱 살 아이가 있습니다.'],
+        ['Tengo que mandar el informe hoy.','오늘 보고서를 보내야 합니다.'],
+        ['¿Tiene dudas?','질문 있으세요?']],
+    drill:'tener que + 동사원형으로 오늘 할 일 두 개 말하기.' },
+  { id:'g11', title:'por와 para',
+    point:'para는 목적·수신자(~을 위해, ~에게), por는 이유·경로·수단.',
+    ex:[['Le mando las bases por correo.','메일로 공고를 보내 드립니다. — 수단'],
+        ['Un informe para agosto.','8월까지 낼 보고서. — 기한·목적'],
+        ['Gracias por la pregunta.','질문 감사합니다. — 이유']],
+    drill:'"para + 사람"과 "por + 이유"를 각각 한 문장씩.' },
+  { id:'g12', title:'재귀동사와 se',
+    point:'행위가 주어에게 돌아오거나, 주체를 밝히지 않을 때 se를 씁니다.',
+    ex:[['La convocatoria se abre en marzo.','공모는 3월에 열립니다.'],
+        ['Se llama chuimsae.','추임새라고 합니다.'],
+        ['¿Nos presentamos brevemente?','간단히 소개할까요?']],
+    drill:'공고문 문장은 대부분 se로 씁니다 — se presenta, se aprueba, se paga.' },
+  { id:'g13', title:'hay — 있다',
+    point:'존재는 hay 하나로 단수·복수 모두. 특정한 것의 위치는 está.',
+    ex:[['Hay dos convocatorias al año.','연 2회 공모가 있습니다.'],
+        ['No hay muestra en español todavía.','아직 스페인어 샘플은 없습니다.'],
+        ['La agenda está en el chat.','안건은 채팅에 있습니다.']],
+    drill:'hay(있다/없다)와 está(그것이 어디 있다)를 한 번씩 말해 구분해 보기.' },
+  { id:'g14', title:'질문 여는 말',
+    point:'qué(무엇) · quién(누구) · cuándo(언제) · dónde(어디) · cómo(어떻게) · cuánto(얼마).',
+    ex:[['¿Con quién hablo sobre los derechos?','저작권은 누구와 이야기하면 됩니까?'],
+        ['¿Cuándo es la convocatoria?','공모는 언제입니까?'],
+        ['¿Cuánto dura una función?','공연은 얼마나 걸립니까?']],
+    drill:'오늘 상황에서 쓸 질문 세 개를 서로 다른 의문사로 만들기.' }
+];
+
+const DECKS = ['기초·생존','동사 변화','업무·정책','문화·공연','일상·관심사'];
+
+const WORDS = [
+  ['e01','기초·생존','por favor','부탁합니다','Un café con leche, por favor.'],
+  ['e02','기초·생존','de nada','아니에요, 별말씀을','— Gracias. — De nada.'],
+  ['e03','기초·생존','perdone','죄송합니다 (말 걸 때·존대)','Perdone, ¿cómo llego a esta dirección?'],
+  ['e04','기초·생존','no entiendo','못 알아들었습니다','Perdón, no entiendo. ¿Más despacio?'],
+  ['e05','기초·생존','más despacio','조금 천천히','¿Puede hablar más despacio, por favor?'],
+  ['e06','기초·생존','¿cómo se dice...?','~는 어떻게 말합니까?','¿Cómo se dice “pansori” en español?'],
+  ['e07','기초·생존','¿qué significa...?','~는 무슨 뜻입니까?','¿Qué significa “convocatoria”?'],
+  ['e08','기초·생존','claro','그럼요, 당연히','— ¿Nos vemos mañana? — Claro.'],
+  ['e09','기초·생존','vale','좋아요, 알겠습니다 (스페인)','Vale, lo hacemos así.'],
+  ['e10','기초·생존','ahora mismo','지금 바로','Se lo mando ahora mismo.'],
+  ['e11','기초·생존','un momento','잠시만요','Un momento, busco el archivo.'],
+  ['e12','기초·생존','se ha cortado','(통화가) 끊겼습니다','Perdón, se ha cortado un momento.'],
+  ['e13','기초·생존','lo siento','죄송합니다, 유감입니다','Lo siento, llego cinco minutos tarde.'],
+  ['e14','기초·생존','sin problema','문제없습니다','Si se corta, me lo dicen sin problema.'],
+
+  ['v01','동사 변화','soy / es / somos','~이다 — 신분·성질 (ser)','Somos una institución pública.'],
+  ['v02','동사 변화','estoy / está / estamos','~에 있다 — 상태·위치 (estar)','Estoy en Seúl esta semana.'],
+  ['v03','동사 변화','tengo / tiene','가지고 있다 (tener)','Tengo un hijo de siete años.'],
+  ['v04','동사 변화','tengo que + 동사원형','~해야 한다','Tengo que mandar el informe hoy.'],
+  ['v05','동사 변화','hay','~이 있다 (존재)','Hay dos convocatorias al año.'],
+  ['v06','동사 변화','me gusta / me gustan','~가 마음에 든다 (gustar)','Me gustan las novelas cortas.'],
+  ['v07','동사 변화','voy a + 동사원형','~하겠습니다 (가까운 미래)','Voy a compartir mi pantalla.'],
+  ['v08','동사 변화','estoy + -ando / -iendo','~하고 있다 (진행)','Estoy escribiendo el tercer capítulo.'],
+  ['v09','동사 변화','puedo / puede','~할 수 있다 (poder)','¿Puede repetirlo, por favor?'],
+  ['v10','동사 변화','quiero / quiere','원하다 (querer)','Queremos publicar este autor en español.'],
+  ['v11','동사 변화','necesito','필요하다 (necesitar)','Necesito el contrato firmado.'],
+  ['v12','동사 변화','le mando','보내 드립니다 (mandar)','Le mando las bases hoy mismo.'],
+  ['v13','동사 변화','llevo + 기간 + -ando','~한 지 …됐다','Llevo tres meses estudiando español.'],
+  ['v14','동사 변화','era / tenía','~였다, 있었다 (불완료과거 — 배경)','Era un teatro de mujeres.'],
+  ['v15','동사 변화','fue / tuvo','~였다, 가졌다 (완료과거 — 사건)','Tuvo mucho éxito en los años cincuenta.'],
+
+  ['t01','업무·정책','institución pública','공공기관','Somos una institución pública.'],
+  ['t02','업무·정책','Ministerio de Cultura','문화부','una institución del Ministerio de Cultura'],
+  ['t03','업무·정책','convocatoria','공모, 모집 공고','La convocatoria se abre en marzo.'],
+  ['t04','업무·정책','bases','공고 요건','Le mando las bases por correo.'],
+  ['t05','업무·정책','solicitud','신청, 신청서','La solicitud se presenta en línea.'],
+  ['t06','업무·정책','solicitar','신청하다','Puede solicitarla la editorial.'],
+  ['t07','업무·정책','ayuda / subvención','지원금, 보조금','una ayuda a la traducción'],
+  ['t08','업무·정책','financiar','재원을 지원하다','Financiamos traducciones a doce idiomas.'],
+  ['t09','업무·정책','plazo','기한, 분할 회차','El plazo termina el 30 de septiembre.'],
+  ['t10','업무·정책','requisitos','요건, 지원 자격','¿Cumple los requisitos?'],
+  ['t11','업무·정책','titular de los derechos','저작권자','Necesitamos el permiso del titular de los derechos.'],
+  ['t12','업무·정책','derechos de autor','저작권','Los derechos de autor los gestiona la agencia.'],
+  ['t13','업무·정책','editorial','출판사','una editorial mexicana'],
+  ['t14','업무·정책','feria del libro','도서전','la Feria Internacional del Libro de Guadalajara'],
+  ['t15','업무·정책','muestra de traducción','번역 샘플','Adjunto una muestra de traducción.'],
+  ['t16','업무·정책','informe','보고서','Preparo un informe para agosto.'],
+  ['t17','업무·정책','estudio de viabilidad','타당성 조사','El estudio de viabilidad está en marcha.'],
+  ['t18','업무·정책','convenio','협약','Firmamos un convenio de colaboración.'],
+
+  ['c01','문화·공연','ópera narrativa','서사 음악극 — 판소리 설명용','El pansori es una ópera narrativa.'],
+  ['c02','문화·공연','cantante','소리꾼, 가수','La cantante hace todos los personajes.'],
+  ['c03','문화·공연','tambor','북','Solo hay una cantante y un tambor.'],
+  ['c04','문화·공연','escenario','무대','Dos personas en el escenario, nada más.'],
+  ['c05','문화·공연','función','공연 1회','Una función puede durar cinco horas.'],
+  ['c06','문화·공연','público','관객','El público responde en voz alta.'],
+  ['c07','문화·공연','papel','역, 역할','Las mujeres hacían los papeles masculinos.'],
+  ['c08','문화·공연','voz rota','갈라진 목소리','La voz rota no es un defecto.'],
+  ['c09','문화·공연','patrimonio inmaterial','무형유산','El pansori es patrimonio inmaterial.'],
+  ['c10','문화·공연','tradición oral','구전 전통','Se transmite por tradición oral.'],
+  ['c11','문화·공연','tesis','학위 논문','Mi tesis trata del Jeokbyeokga.'],
+  ['c12','문화·공연','investigar','연구하다','Investigo el teatro de los años cincuenta.'],
+  ['c13','문화·공연','fuente','자료, 출전','Casi no se conservan fuentes.'],
+  ['c14','문화·공연','traducción literaria','문학 번역','un taller de traducción literaria'],
+
+  ['d01','일상·관심사','por la noche','밤에','Estudio español por la noche.'],
+  ['d02','일상·관심사','tranquila','조용한, 차분한','cuando la casa está tranquila'],
+  ['d03','일상·관심사','estar cansada','피곤하다','El jueves estoy muy cansada.'],
+  ['d04','일상·관심사','colegio','학교','Dejo a mi hijo en el colegio a las ocho.'],
+  ['d05','일상·관심사','madrugar','일찍 일어나다','Madrugo para leer una hora.'],
+  ['d06','일상·관심사','no me da la vida','도저히 시간이 안 난다','Esta semana no me da la vida.'],
+  ['d07','일상·관심사','poco a poco','조금씩','Poco a poco entiendo más.'],
+  ['d08','일상·관심사','me viene bien','저한테 괜찮습니다','El jueves por la mañana me viene bien.'],
+  ['d09','일상·관심사','novela corta','중·단편 소설','Estoy leyendo una novela corta.'],
+  ['d10','일상·관심사','cuento','단편, 이야기','De momento leo cuentos, no novelas largas.'],
+  ['d11','일상·관심사','disfrutar','즐기다','Leo despacio, pero lo disfruto.'],
+  ['d12','일상·관심사','lo dejo por hoy','오늘은 여기까지 하겠다','A las diez lo dejo por hoy.']
+];
+
+const SOURCES = [
+  { id:'practica', name:'Practica Español', url:'https://practicaespanol.com', level:1, topic:'뉴스·기초',
+    why:'EFE 통신이 학습자용으로 다시 쓴 뉴스. 레벨 표시와 어휘 설명이 붙어 있어 첫 달에 가장 안전한 소스입니다.',
+    how:'A1~A2 표시가 있는 기사 하나. 모르는 단어는 세 개까지만 찾습니다.' },
+  { id:'koreanet', name:'Korea.net (español)', url:'https://spanish.korea.net', level:1, topic:'한국·문화',
+    why:'이미 아는 내용을 스페인어로 읽는 연습. 배경지식이 있는 글이 같은 난이도의 다른 글보다 훨씬 빨리 읽힙니다.',
+    how:'문화·정책 기사 하나. 한국어로 아는 기관명·사업명의 스페인어 표기를 다섯 개 캡처.' },
+  { id:'bbcmundo', name:'BBC News Mundo', url:'https://www.bbc.com/mundo', level:1, topic:'뉴스',
+    why:'문장이 짧고 구조가 반복됩니다. 연속일이 위험한 날의 안전한 선택.',
+    how:'제목 다섯 개만 읽고 하나 고르기. 8분을 넘기지 않습니다.' },
+  { id:'lingua', name:'Lingua.com — Lecturas', url:'https://www.lingua.com/es/espanol/lectura/', level:1, topic:'기초 독해',
+    why:'짧은 읽기 글과 문제가 한 쌍으로 있습니다. 문법이 흔들릴 때 돌아올 곳.',
+    how:'A1~A2 글 한 편 + 문제. 틀린 문장만 소리 내어 다시 읽기.' },
+  { id:'cvc', name:'Centro Virtual Cervantes', url:'https://cvc.cervantes.es', level:2, topic:'언어·번역',
+    why:'세르반테스 문화원의 언어·번역 자료실. 번역을 설명하는 스페인어가 모여 있어 업무와 논문 양쪽에 쓰입니다.',
+    how:'번역 관련 글 한 편의 첫 단락만. 번역을 설명하는 동사를 수집.' },
+  { id:'elpais', name:'El País — Cultura', url:'https://elpais.com/cultura/', level:2, topic:'문화',
+    why:'스페인어권 문화 기사의 기본형. 공연·출판 기사가 매일 올라옵니다.',
+    how:'기사 하나의 첫 두 단락만. 숫자와 기관명이 들어간 문장을 통째로 가져오기.' },
+  { id:'fil', name:'FIL Guadalajara', url:'https://www.fil.com.mx', level:2, topic:'업무·도서전',
+    why:'중남미 최대 도서전. 업무에서 쓰는 어휘 밀도가 가장 높은 곳입니다.',
+    how:'프로그램이나 보도자료 한 페이지. 사업·행사 명칭의 스페인어 표현을 다섯 개.' },
+  { id:'liber', name:'LIBER — Feria del Libro', url:'https://www.liber.ifema.es', level:2, topic:'업무·출판',
+    why:'스페인 출판계의 공식 문서 어휘. 공모·협약·지원 표현이 그대로 나옵니다.',
+    how:'참가 안내문 한 페이지. convocatoria·solicitud·plazo가 쓰인 문장을 찾아 그대로 메모.' },
+  { id:'zenda', name:'Zenda Libros', url:'https://www.zendalibros.com', level:3, topic:'문학·서평',
+    why:'매일 올라오는 서평과 에세이. 서평 스페인어의 기본형을 익히는 곳.',
+    how:'리뷰 하나. 평가를 담은 형용사 세 개를 가져오기.' },
+  { id:'babelia', name:'El País — Babelia', url:'https://elpais.com/babelia/', level:3, topic:'문학',
+    why:'문학 전문 섹션. 번역서 리뷰가 자주 실립니다.',
+    how:'토요일용. 한 편을 끝까지 읽고 스페인어 세 문장으로 요약.' },
+  { id:'letraslibres', name:'Letras Libres', url:'https://letraslibres.com', level:3, topic:'학술·에세이',
+    why:'멕시코·스페인의 비평 잡지. 논문 문장의 모델로 쓰기 좋습니다.',
+    how:'인문 분야 한 편. 논지를 소개하는 첫 단락 구조를 베껴 내 연구로 바꿔 쓰기.' },
+  { id:'revistaunam', name:'Revista de la Universidad de México', url:'https://www.revistadelauniversidad.mx', level:3, topic:'학술',
+    why:'연구자가 자기 연구를 일반 독자에게 설명하는 글이 실립니다. 학회 발표문의 문장 모델.',
+    how:'한 편의 도입부만. 연구를 소개하는 틀을 그대로 가져와 판소리로 바꿔 보기.' }
+];
+
+/* 요일별 소스 배치 — 월요일은 가볍게, 토요일은 긴 글, 일요일은 보관함 정리 */
+const WEEK = [
+  { src:null,           note:'보관함 정리 — 주중에 모은 표현을 단어장으로 넘기는 날' },
+  { src:'bbcmundo',     note:'가볍게 시동' },
+  { src:'koreanet',     note:'아는 내용을 스페인어로' },
+  { src:'fil',          note:'업무 어휘 밀도 최고' },
+  { src:'elpais',       note:'문화면 — 공연·출판' },
+  { src:'cvc',          note:'번역을 설명하는 스페인어' },
+  { src:'babelia',      note:'긴 글 한 편 버티기' }
+];
+
+/* ════════ 상태 ════════ */
+const BOX_DAYS = [1,3,7,14,30];
+const NEW_PER_DAY = 5, SESSION_CAP = 12;
+
+let CAP = { db:null, user:null, sample:null, uid:null };
+let S = {
+  progress:{ streak:0, best:0, days:{} },
+  vocab:{},
+  library:[],
+  mine:[]
+};
+let currentScenario = SCENARIOS[0];
+let session = [], sessionIdx = 0, revealed = false;
+
+const $ = id => document.getElementById(id);
+const todayKey = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+const dayNum = () => Math.floor((Date.now() - new Date().getTimezoneOffset()*60000) / 86400000);
+const addDays = (k,n) => { const [y,m,d]=k.split('-').map(Number); const t=new Date(y,m-1,d+n);
+  return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0'); };
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ── 저장: db 우선, 없으면 브라우저 ── */
+const LS = 'haru3-es-v1';
+function loadLocal(){
+  try{ const raw = localStorage.getItem(LS); if(raw) Object.assign(S, JSON.parse(raw)); }catch(e){}
+}
+function saveLocal(){
+  try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){}
+}
+let writeTimer = null, writing = false;
+function persist(){
+  saveLocal();
+  if(!CAP.db || !CAP.uid) return;
+  clearTimeout(writeTimer);
+  writeTimer = setTimeout(async () => {
+    if(writing) { persist(); return; }
+    writing = true;
+    try{
+      await CAP.db.doc('data/users/'+CAP.uid+'/state-es').set({
+        progress:S.progress, vocab:S.vocab, library:S.library, mine:S.mine, savedAt:new Date().toISOString()
+      });
+      $('syncNote').textContent = '계정에 저장됩니다. 휴대폰과 노트북에서 같은 기록이 보입니다.';
+    }catch(e){
+      $('syncNote').textContent = '이 브라우저에만 저장되는 중입니다 ('+(e&&e.code?e.code:'오류')+').';
+    }
+    writing = false;
+  }, 600);
+}
+
+async function boot(){
+  loadLocal();
+  renderAll();
+  try{
+    const [db, user, sample] = await Promise.all([
+      window.claude?.use ? window.claude.use('db') : null,
+      window.claude?.use ? window.claude.use('user') : null,
+      window.claude?.use ? window.claude.use('sample') : null
+    ]);
+    CAP.db = db; CAP.user = user; CAP.sample = sample;
+    if(user) { try{ CAP.uid = await user.id(); }catch(e){} }
+    if(db && CAP.uid){
+      const snap = await db.doc('data/users/'+CAP.uid+'/state-es').get();
+      if(snap.exists){
+        const d = snap.data();
+        if(d.progress) S.progress = Object.assign({streak:0,best:0,days:{}}, d.progress);
+        if(d.vocab) S.vocab = d.vocab;
+        if(Array.isArray(d.library)) S.library = d.library;
+        if(Array.isArray(d.mine)) S.mine = d.mine;
+        saveLocal();
+      }
+      $('syncNote').textContent = '계정에 저장됩니다. 휴대폰과 노트북에서 같은 기록이 보입니다.';
+    } else {
+      $('syncNote').textContent = '이 브라우저에만 저장됩니다. 로그인하면 기기 간에 이어집니다.';
+    }
+    if(!sample){
+      $('speakCoachNote').hidden = false;
+      $('speakCoachNote').textContent = '피드백 기능은 이 화면에서 쓸 수 없습니다. 답변은 저장하고 넘어가세요.';
+      $('speakCoachBtn').disabled = true; $('summaryCoachBtn').disabled = true;
+    }
+  }catch(e){
+    $('syncNote').textContent = '이 브라우저에만 저장됩니다.';
+  }
+  renderAll();
+}
+
+/* ── 연속일 ── */
+function cellsDone(k){ const d = S.progress.days[k]; if(!d) return 0;
+  return (d.speak?1:0)+(d.read?1:0)+(d.vocab?1:0); }
+function recalcStreak(){
+  let k = todayKey(), n = 0;
+  if(cellsDone(k) === 0) k = addDays(k,-1);
+  while(cellsDone(k) > 0){ n++; k = addDays(k,-1); }
+  S.progress.streak = n;
+  if(n > (S.progress.best||0)) S.progress.best = n;
+}
+function markCell(cell){
+  const k = todayKey();
+  S.progress.days[k] = Object.assign({speak:false,read:false,vocab:false}, S.progress.days[k]);
+  if(S.progress.days[k][cell]) { recalcStreak(); persist(); renderAll(); return; }
+  S.progress.days[k][cell] = true;
+  recalcStreak(); persist(); renderAll();
+}
+
+/* ── 단어 ── */
+function allWords(){
+  const base = WORDS.map(w => ({id:w[0], deck:w[1], term:w[2], ko:w[3], ex:w[4]}));
+  return base.concat(S.mine.map(m => ({id:m.id, deck:'내가 모은 표현', term:m.term, ko:m.ko||'', ex:m.ex||''})));
+}
+function dueCount(){
+  const t = todayKey(); let n = 0;
+  for(const w of allWords()){ const st = S.vocab[w.id];
+    if(st && st.box <= 5 && st.due <= t) n++; }
+  return n;
+}
+function buildSession(){
+  const t = todayKey(), words = allWords(), due = [], fresh = [];
+  for(const w of words){
+    const st = S.vocab[w.id];
+    if(!st) fresh.push(w);
+    else if(st.box <= 5 && st.due <= t) due.push(w);
+  }
+  session = due.concat(fresh.slice(0, NEW_PER_DAY)).slice(0, SESSION_CAP);
+  sessionIdx = 0; revealed = false;
+}
+function gradeCard(ok){
+  const w = session[sessionIdx]; if(!w) return;
+  const st = S.vocab[w.id] || {box:0, seen:0};
+  st.seen = (st.seen||0)+1;
+  st.box = ok ? Math.min((st.box||0)+1, 6) : 1;
+  st.due = addDays(todayKey(), BOX_DAYS[Math.min(st.box,5)-1] || 30);
+  S.vocab[w.id] = st;
+  sessionIdx++; revealed = false;
+  if(sessionIdx >= 5 || sessionIdx >= session.length) markCell('vocab');
+  else { persist(); }
+  renderVocab(); renderToday(); renderTabs(); renderLog();
+}
+
+/* ════════ 렌더 ════════ */
+function renderToday(){
+  const d = new Date(), wd = ['일','월','화','수','목','금','토'][d.getDay()];
+  $('dayStamp').textContent = todayKey().replace(/-/g,'. ') + ' · ' + wd + '요일';
+  const day = S.progress.days[todayKey()] || {};
+
+  const sc = SCENARIOS[dayNum() % SCENARIOS.length];
+  $('todaySpeakTitle').textContent = sc.group + ' — ' + sc.title;
+  $('todaySpeakMeta').textContent = '질문 세 개에 소리 내어 답하기 · 문법 ' + GRAMMAR[dayNum() % GRAMMAR.length].title;
+  $('cell-speak').classList.toggle('done', !!day.speak);
+
+  const plan = WEEK[d.getDay()];
+  const src = plan.src ? SOURCES.find(s => s.id === plan.src) : null;
+  $('todayReadTitle').textContent = src ? src.name : '보관함 정리';
+  $('todayReadMeta').textContent = plan.note;
+  $('cell-read').classList.toggle('done', !!day.read);
+
+  const due = dueCount();
+  $('todayVocabTitle').textContent = due > 0 ? '복습 ' + due + '장 + 새 단어 ' + NEW_PER_DAY + '장' : '새 단어 ' + NEW_PER_DAY + '장';
+  $('todayVocabMeta').textContent = '다섯 장만 넘겨도 이 칸은 완료';
+  $('cell-vocab').classList.toggle('done', !!day.vocab);
+
+  $('weekPlan').innerHTML = WEEK.map((p,i) => {
+    const s = p.src ? SOURCES.find(x => x.id===p.src) : null;
+    const name = ['일','월','화','수','목','금','토'][i];
+    const on = i === d.getDay();
+    return '<div style="display:flex;gap:8px;padding:3px 0'+(on?';color:var(--ink);font-weight:600':'')+'">'
+      + '<span style="font-family:var(--font-mono);width:16px">'+name+'</span>'
+      + '<span style="min-width:0">'+esc(s?s.name:'보관함 정리')+'</span></div>';
+  }).join('');
+}
+
+function renderGrammar(){
+  const g = GRAMMAR[dayNum() % GRAMMAR.length];
+  $('gramTitle').textContent = g.title;
+  $('gramPoint').textContent = g.point;
+  $('gramEx').innerHTML = g.ex.map(e =>
+    '<div class="phrase"><div class="es">'+esc(e[0])+'</div><div class="ko">'+esc(e[1])+'</div></div>').join('');
+  $('gramDrill').textContent = g.drill;
+}
+
+function renderScenario(){
+  const sc = currentScenario;
+  $('scenarioWhen').textContent = sc.when;
+  $('scenarioPrompts').innerHTML = sc.prompts.map((p,i) =>
+    '<li><span class="q">Q'+(i+1)+'</span><span class="es">'+esc(p)+'</span></li>').join('');
+  $('scenarioPhrases').innerHTML = sc.phrases.map(p =>
+    '<div class="phrase"><div class="es">'+esc(p[0])+'</div><div class="ko">'+esc(p[1])+'</div></div>').join('');
+  $('scenarioModel').textContent = sc.model;
+  $('scenarioTip').textContent = sc.tip;
+}
+function renderScenarioPicker(){
+  const groups = ['업무','논문','일상'];
+  $('scenarioPick').innerHTML = groups.map(g =>
+    '<optgroup label="'+g+'">' + SCENARIOS.filter(s=>s.group===g)
+      .map(s => '<option value="'+s.id+'"'+(s.id===currentScenario.id?' selected':'')+'>'+esc(s.title)+'</option>').join('')
+    + '</optgroup>').join('');
+}
+
+function renderRead(){
+  const d = new Date(), plan = WEEK[d.getDay()];
+  const src = plan.src ? SOURCES.find(s => s.id === plan.src) : null;
+  const lv = n => '<span class="pill lv'+n+'">'+['','쉬움','보통','어려움'][n]+'</span>';
+  $('todaySource').innerHTML = src
+    ? '<div class="srctop"><a href="'+src.url+'" target="_blank" rel="noopener">'+esc(src.name)+'</a>'+lv(src.level)
+      +'<span class="pill">'+esc(src.topic)+'</span></div>'
+      +'<p class="ko" style="margin-top:6px">'+esc(src.why)+'</p>'
+      +'<p class="tip" style="margin-top:8px">'+esc(src.how)+'</p>'
+    : '<p class="ko">일요일입니다. 새 글 대신 보관함을 엽니다. 이번 주에 모은 표현을 아래에서 단어장으로 넘기세요.</p>'
+      +'<p class="tip" style="margin-top:8px">'+esc(plan.note)+'</p>';
+
+  $('libCount').textContent = S.library.length + '편';
+  $('libList').innerHTML = S.library.length === 0
+    ? '<p class="empty">아직 비어 있습니다. 위에서 한 편 읽고 제목·링크·한 문장 요약만 남겨 보세요.</p>'
+    : S.library.slice().reverse().slice(0,12).map(a =>
+        '<div class="saved"><div class="t">'+(a.url ? '<a href="'+esc(a.url)+'" target="_blank" rel="noopener">'+esc(a.title||a.url)+'</a>' : esc(a.title))+'</div>'
+        +(a.summary ? '<div class="m">'+esc(a.summary)+'</div>' : '')
+        +'<div class="m" style="color:var(--ink-3)">'+esc(a.date)+(a.words&&a.words.length ? ' · ' + esc(a.words.join(', ')) : '')+'</div></div>').join('');
+
+  $('sourceList').innerHTML = SOURCES.map(s =>
+    '<div class="srcrow"><div class="srctop"><a href="'+s.url+'" target="_blank" rel="noopener">'+esc(s.name)+'</a>'
+    + lv(s.level) + '<span class="pill">'+esc(s.topic)+'</span></div>'
+    + '<div class="ko">'+esc(s.why)+'</div></div>').join('');
+}
+
+function renderVocab(){
+  if(session.length === 0 || sessionIdx >= session.length) buildSession();
+  const w = session[sessionIdx];
+  if(!w){
+    $('vocabProgress').textContent = '오늘 몫 끝';
+    $('vocabDeckName').textContent = '';
+    $('flashTerm').textContent = '오늘 단어는 끝났습니다';
+    $('flashBack').hidden = true;
+    $('flashBtns').innerHTML = '<button class="btn" id="moreBtn">그래도 더 하기</button>';
+    $('moreBtn').onclick = () => { session=[]; sessionIdx=0; buildSession();
+      if(session.length===0){ session = allWords().slice(0,SESSION_CAP); } renderVocab(); };
+  } else {
+    $('vocabProgress').textContent = (sessionIdx+1) + ' / ' + session.length;
+    $('vocabDeckName').textContent = w.deck;
+    $('flashTerm').textContent = w.term;
+    $('flashKo').textContent = w.ko;
+    $('flashEx').textContent = w.ex ? '“' + w.ex + '”' : '';
+    $('flashBack').hidden = !revealed;
+    $('flashBtns').innerHTML = revealed
+      ? '<button class="btn" id="againBtn">다시</button><button class="btn primary" id="okBtn">알아요</button>'
+      : '<button class="btn primary" id="showBtn">뜻 보기</button>';
+    if(revealed){ $('againBtn').onclick = () => gradeCard(false); $('okBtn').onclick = () => gradeCard(true); }
+    else { $('showBtn').onclick = () => { revealed = true; renderVocab(); }; }
+  }
+
+  $('myWordsList').innerHTML = S.mine.length === 0
+    ? '<p class="empty">읽기 화면에서 표현을 저장하면 여기 모입니다.</p>'
+    : S.mine.slice().reverse().slice(0,20).map(m => {
+        const st = S.vocab[m.id];
+        return '<div class="phrase"><div class="es">'+esc(m.term)+'</div>'
+          + '<div class="ko">'+(st ? '상자 '+Math.min(st.box,6)+' · 다음 '+esc(st.due) : '아직 안 나온 단어')+'</div></div>';
+      }).join('');
+
+  const decks = DECKS.concat(S.mine.length ? ['내가 모은 표현'] : []);
+  if($('deckPick').options.length !== decks.length){
+    $('deckPick').innerHTML = decks.map(d => '<option>'+esc(d)+'</option>').join('');
+  }
+  const pick = $('deckPick').value || decks[0];
+  $('deckList').innerHTML = allWords().filter(w2 => w2.deck === pick).map(w2 => {
+    const st = S.vocab[w2.id];
+    return '<div class="phrase"><div class="es">'+esc(w2.term)+' <span class="pill">'+(st?'상자 '+Math.min(st.box,6):'새 단어')+'</span></div>'
+      + '<div class="ko">'+esc(w2.ko)+'</div>'
+      + (w2.ex ? '<div class="ko" style="color:var(--ink-3)">'+esc(w2.ex)+'</div>' : '') + '</div>';
+  }).join('');
+}
+
+function renderLog(){
+  recalcStreak();
+  $('statStreak').textContent = S.progress.streak;
+  $('statBest').textContent = S.progress.best || 0;
+  $('statFull').textContent = Object.keys(S.progress.days).filter(k => cellsDone(k) === 3).length;
+  $('statWords').textContent = Object.values(S.vocab).filter(v => v.box >= 3).length;
+  $('statArts').textContent = S.library.length;
+
+  let cells = '';
+  for(let i = 27; i >= 0; i--){
+    const k = addDays(todayKey(), -i), n = cellsDone(k);
+    cells += '<div class="'+(n===3?'full':n>0?'part':'')+(i===0?' today':'')+'" title="'+k+' · '+n+'칸"></div>';
+  }
+  $('grid28').innerHTML = cells;
+
+  const counts = [0,0,0,0,0,0];
+  for(const v of Object.values(S.vocab)) counts[Math.min(v.box,6)-1]++;
+  const max = Math.max(1, ...counts);
+  $('boxBar').innerHTML = counts.map(c =>
+    '<div style="height:'+Math.round(c/max*100)+'%'+(c?';background:var(--rojo)':'')+'" title="'+c+'개"></div>').join('');
+}
+
+function renderTabs(){
+  $('tabTodayNum').textContent = 3 - cellsDone(todayKey());
+  $('tabVocabNum').textContent = dueCount();
+  const day = S.progress.days[todayKey()] || {};
+  $('tabSpeakDot').hidden = !!day.speak;
+  $('tabReadDot').hidden = !!day.read;
+}
+
+function renderAll(){ renderToday(); renderGrammar(); renderScenarioPicker(); renderScenario(); renderRead(); renderVocab(); renderLog(); renderTabs();
+  $('streakNum').textContent = S.progress.streak; }
+
+/* ════════ 피드백 (Claude) ════════ */
+const COACH_BASE = "You are a Spanish tutor for a Korean professional who is a beginner in Spanish (around A1-A2) "
+ + "but a fluent, careful writer in Korean and a competent speaker of English. "
+ + "She works at a public literary translation institute in Korea on policy and planning, deals with Spanish and Latin American "
+ + "publishers, book fairs (FIL Guadalajara, LIBER) and grant schemes, and is writing a doctoral thesis on pansori "
+ + "(Jeokbyeokga and its relation to the Chinese novel Three Kingdoms) and on 1950s all-female gukgeuk theatre.\n"
+ + "Correct her Spanish without raising the level: keep her sentences short and keep every structure within A2. "
+ + "Do not introduce the subjunctive or compound tenses unless she used one herself.\n"
+ + "Answer in Korean, with the Spanish examples in Spanish. Keep it under 180 Korean words. Use exactly this shape, no preamble:\n"
+ + "고친 문장: (her text, rewritten the way a Spanish speaker would actually say it — same meaning, same register, still A2)\n"
+ + "왜: (two short bullets, each naming the specific thing changed — gender, agreement, ser/estar, preposition, verb ending, word order)\n"
+ + "발음: (one line — the one word in the corrected sentence she is most likely to mispronounce, with the Korean approximation and the stressed syllable)\n"
+ + "한 단계 위: (one more natural or more precise alternative she could reach for, still within A2)\n"
+ + "한마디: (one short encouraging line, no exclamation marks, name one thing she already did right)";
+
+async function coach(kind, text, target){
+  if(!CAP.sample) return;
+  const el = $(target);
+  el.hidden = false; el.textContent = '보는 중…';
+  const ctx = kind === 'speak'
+    ? 'She is practising this speaking situation: "' + currentScenario.title + '" — ' + currentScenario.when
+      + '\nThe question she is answering: ' + currentScenario.prompts[0]
+    : 'She read an article in Spanish and wrote a one-sentence summary of it in Spanish.';
+  try{
+    const res = await CAP.sample(COACH_BASE + '\n\n' + ctx + '\n\nHer Spanish:\n' + text, {
+      modelTier:'default',
+      onText:({text}) => { el.textContent = text; }
+    });
+    el.textContent = res.text;
+  }catch(e){
+    const code = e && e.code;
+    el.textContent = code === 'rate_limited'
+      ? '잠시 후 다시 눌러 주세요.'
+      : code === 'not_granted'
+        ? '이 화면에서는 피드백을 쓸 수 없습니다. 답변은 그대로 저장하고 넘어가세요.'
+        : '피드백을 받지 못했습니다. 답변은 그대로 두고 다음 칸으로 가세요.';
+  }
+}
+
+/* ════════ 이벤트 ════════ */
+function show(tab){
+  for(const t of document.querySelectorAll('.tab')){
+    const on = t.dataset.tab === tab;
+    t.setAttribute('aria-current', on ? 'true' : 'false');
+  }
+  for(const v of document.querySelectorAll('.view')) v.hidden = (v.id !== 'view-' + tab);
+  window.scrollTo({top:0, behavior:'instant'});
+}
+document.querySelector('.tabbar').addEventListener('click', e => {
+  const b = e.target.closest('.tab'); if(b) show(b.dataset.tab);
+});
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-go]'); if(g) show(g.dataset.go);
+});
+$('scenarioPick').addEventListener('change', e => {
+  currentScenario = SCENARIOS.find(s => s.id === e.target.value) || SCENARIOS[0];
+  renderScenario(); $('speakFeedback').hidden = true;
+});
+$('deckPick').addEventListener('change', renderVocab);
+$('speakCoachBtn').addEventListener('click', () => {
+  const t = $('speakAnswer').value.trim();
+  if(t.length < 10){ $('speakFeedback').hidden = false;
+    $('speakFeedback').textContent = '한 문장이라도 스페인어로 적어 주세요. 틀린 문장이 있어야 고칠 수 있습니다.'; return; }
+  coach('speak', t, 'speakFeedback');
+});
+$('speakDoneBtn').addEventListener('click', () => {
+  markCell('speak');
+});
+$('summaryCoachBtn').addEventListener('click', () => {
+  const t = $('artSummary').value.trim();
+  if(t.length < 10){ $('readFeedback').hidden = false;
+    $('readFeedback').textContent = '스페인어로 한 문장만 적어 주세요.'; return; }
+  coach('read', t, 'readFeedback');
+});
+$('saveArtBtn').addEventListener('click', () => {
+  const title = $('artTitle').value.trim(), url = $('artUrl').value.trim();
+  const summary = $('artSummary').value.trim(), raw = $('artWords').value.trim();
+  if(!title && !url){ $('readFeedback').hidden = false;
+    $('readFeedback').textContent = '제목이나 링크 하나는 남겨 주세요.'; return; }
+  const words = raw ? raw.split(',').map(s => s.trim()).filter(Boolean).slice(0,8) : [];
+  S.library.push({ id:'a'+Date.now(), title, url, summary, words, date:todayKey() });
+  for(const term of words){
+    S.mine.push({ id:'m'+Date.now()+'-'+Math.random().toString(36).slice(2,6), term, ko:'', ex:summary || '' });
+  }
+  $('artTitle').value=''; $('artUrl').value=''; $('artSummary').value=''; $('artWords').value='';
+  $('readFeedback').hidden = false;
+  $('readFeedback').textContent = '보관함에 넣었습니다' + (words.length ? ' · 표현 '+words.length+'개가 단어장으로 갔습니다.' : '.');
+  markCell('read');
+});
+
+boot();
+</script>
