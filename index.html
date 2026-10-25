@@ -827,17 +827,36 @@ const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':
 const LS = 'haru3-es-v1';
 function loadLocal(){
   try{ const raw = localStorage.getItem(LS); if(raw) Object.assign(S, JSON.parse(raw)); }catch(e){}
+  normalizeState();
+}
+/* 저장소에서 온 값이 기대한 형이 아니면 밀어 넣기(push)가 조용히 실패합니다.
+   db·localStorage 어느 쪽에서 왔든 쓰기 전에 배열/객체로 맞춥니다. */
+const asArray = v => Array.isArray(v) ? v : (v && typeof v === 'object' ? Object.values(v) : []);
+const asObject = v => (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+function normalizeState(){
+  S.progress = asObject(S.progress);
+  S.progress.days = asObject(S.progress.days);
+  S.progress.streak = Number(S.progress.streak) || 0;
+  S.progress.best = Number(S.progress.best) || 0;
+  S.vocab = asObject(S.vocab);
+  S.library = asArray(S.library).filter(a => a && typeof a === 'object');
+  S.mine = asArray(S.mine).filter(m => m && typeof m === 'object' && m.term);
 }
 function saveLocal(){
   try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){}
 }
-let writeTimer = null, writing = false;
+let writeTimer = null, writing = false, writeRetries = 0;
 function persist(){
   saveLocal();
   if(!CAP.db || !CAP.uid) return;
   clearTimeout(writeTimer);
   writeTimer = setTimeout(async () => {
-    if(writing) { persist(); return; }
+    if(writing) {
+      if(writeRetries++ < 20) persist();
+      else $('syncNote').textContent = '계정 저장이 응답하지 않습니다. 이 브라우저에는 저장돼 있습니다.';
+      return;
+    }
+    writeRetries = 0;
     writing = true;
     try{
       await CAP.db.doc('data/users/'+CAP.uid+'/state-es').set({
@@ -868,8 +887,9 @@ async function boot(){
         const d = snap.data();
         if(d.progress) S.progress = Object.assign({streak:0,best:0,days:{}}, d.progress);
         if(d.vocab) S.vocab = d.vocab;
-        if(Array.isArray(d.library)) S.library = d.library;
-        if(Array.isArray(d.mine)) S.mine = d.mine;
+        if(d.mine) S.mine = asArray(d.mine);
+        if(d.library) S.library = asArray(d.library);
+        normalizeState();
         saveLocal();
       }
       $('syncNote').textContent = '계정에 저장됩니다. 휴대폰과 노트북에서 같은 기록이 보입니다.';
@@ -1143,6 +1163,20 @@ async function coach(kind, text, target){
 }
 
 /* ════════ 이벤트 ════════ */
+/* 버튼 안에서 오류가 나면 아무 일도 안 일어난 것처럼 보입니다.
+   그 경우 이유를 피드백 칸에 그대로 띄웁니다. */
+function guard(target, fn){
+  return function(ev){
+    try{ fn(ev); }
+    catch(err){
+      console.error(err);
+      const el = $(target);
+      if(el){ el.hidden = false;
+        el.textContent = '저장하지 못했습니다 — ' + ((err && err.message) || err)
+          + '\n(이 줄을 그대로 알려 주시면 고치겠습니다.)'; }
+    }
+  };
+}
 function show(tab){
   for(const t of document.querySelectorAll('.tab')){
     const on = t.dataset.tab === tab;
@@ -1162,22 +1196,22 @@ $('scenarioPick').addEventListener('change', e => {
   renderScenario(); $('speakFeedback').hidden = true;
 });
 $('deckPick').addEventListener('change', renderVocab);
-$('speakCoachBtn').addEventListener('click', () => {
+$('speakCoachBtn').addEventListener('click', guard('speakFeedback', () => {
   const t = $('speakAnswer').value.trim();
   if(t.length < 10){ $('speakFeedback').hidden = false;
     $('speakFeedback').textContent = '한 문장이라도 스페인어로 적어 주세요. 틀린 문장이 있어야 고칠 수 있습니다.'; return; }
   coach('speak', t, 'speakFeedback');
-});
-$('speakDoneBtn').addEventListener('click', () => {
+}));
+$('speakDoneBtn').addEventListener('click', guard('speakFeedback', () => {
   markCell('speak');
-});
-$('summaryCoachBtn').addEventListener('click', () => {
+}));
+$('summaryCoachBtn').addEventListener('click', guard('readFeedback', () => {
   const t = $('artSummary').value.trim();
   if(t.length < 10){ $('readFeedback').hidden = false;
     $('readFeedback').textContent = '스페인어로 한 문장만 적어 주세요.'; return; }
   coach('read', t, 'readFeedback');
-});
-$('saveArtBtn').addEventListener('click', () => {
+}));
+$('saveArtBtn').addEventListener('click', guard('readFeedback', () => {
   const title = $('artTitle').value.trim(), url = $('artUrl').value.trim();
   const summary = $('artSummary').value.trim(), raw = $('artWords').value.trim();
   if(!title && !url){ $('readFeedback').hidden = false;
@@ -1191,7 +1225,7 @@ $('saveArtBtn').addEventListener('click', () => {
   $('readFeedback').hidden = false;
   $('readFeedback').textContent = '보관함에 넣었습니다' + (words.length ? ' · 표현 '+words.length+'개가 단어장으로 갔습니다.' : '.');
   markCell('read');
-});
+}));
 
 boot();
 </script>
