@@ -194,6 +194,16 @@
   @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .rateRow .btn.on{color:#fff}}
   @media (max-width:390px){ .tab{font-size:10.5px} }
 
+  /* 활용표 */
+  .conjwrap{overflow-x:auto}
+  .conj{width:100%; border-collapse:collapse; font-size:14px; line-height:1.5}
+  .conj th{font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3);
+    font-weight:500; text-align:left; padding:5px 10px 5px 0; border-bottom:1px solid var(--line); white-space:nowrap}
+  .conj td{padding:5px 10px 5px 0; border-bottom:1px solid var(--line); white-space:nowrap}
+  .conj td:first-child{font-family:var(--font-mono); font-size:11.5px; color:var(--ink-3)}
+  .conj tr:last-child td{border-bottom:0}
+  .conj .hl{color:var(--rojo-ink); font-weight:600}
+
   .note{font-size:12.5px; color:var(--ink-3); line-height:1.6}
   select.pickers{max-width:100%}
   @media (min-width:560px){ .cell{gap:14px} }
@@ -406,6 +416,16 @@
 
     <div id="pastPane" hidden style="display:flex; flex-direction:column; gap:14px">
       <div class="card">
+        <div class="btnrow" id="pastModeRow">
+          <button class="btn primary" data-pmode="train">변환·일기</button>
+          <button class="btn" data-pmode="sheet">문법시트</button>
+          <button class="btn" data-pmode="quiz">동사 퀴즈</button>
+        </div>
+        <p class="note" id="pastModeNote">변환으로 입을 풀고, 막히면 문법시트에서 찾고, 퀴즈로 확인합니다. 퀴즈 10문제 중 8개를 맞히면 그날 과거형은 합격입니다.</p>
+      </div>
+
+      <div id="pastTrain" style="display:flex; flex-direction:column; gap:14px">
+      <div class="card">
         <div class="counter"><span id="pastProgress">—</span><span id="pastKind">—</span></div>
         <div class="es" id="pastPres" style="font-size:16.5px; line-height:1.6">—</div>
         <p class="note">이 문장을 어제 일로 바꿔 소리 내어 말해 보세요. 그다음 확인합니다.</p>
@@ -430,6 +450,99 @@
           <button class="btn" id="pastLaterBtn">나중에 받기</button>
         </div>
         <div class="feedback" id="pastFeedback" hidden></div>
+      </div>
+      </div>
+
+      <div id="pastSheet" hidden style="display:flex; flex-direction:column; gap:14px">
+        <div class="card">
+          <div class="label">언제 어느 과거를 쓰나</div>
+          <div class="cell" style="grid-template-columns:auto 1fr">
+            <div class="cell-no" style="width:auto; padding:0 7px">사건</div>
+            <div class="cell-body">
+              <div class="cell-title">완료과거 — pretérito indefinido</div>
+              <div class="cell-meta">일어나고 끝난 일. 이야기를 앞으로 민다. "어제 보냈다, 만났다, 열렸다."</div>
+              <div class="cell-meta" style="color:var(--rojo-ink)">신호어: ayer · anoche · el año pasado · de repente · una vez · 날짜</div>
+            </div>
+          </div>
+          <hr class="hr">
+          <div class="cell" style="grid-template-columns:auto 1fr">
+            <div class="cell-no" style="width:auto; padding:0 7px">배경</div>
+            <div class="cell-body">
+              <div class="cell-title">불완료과거 — imperfecto</div>
+              <div class="cell-meta">그 무렵의 상태·습관·풍경. 무대 조명. "피곤했다, 살았다, ~하곤 했다."</div>
+              <div class="cell-meta" style="color:var(--rojo-ink)">신호어: antes · siempre · de niña · mientras · todos los días · en aquella época</div>
+            </div>
+          </div>
+          <p class="tip">한 문장 안에서는 보통 이렇게 만납니다 — Leía en el metro(배경) cuando llegó el mensaje(사건).</p>
+        </div>
+
+        <div class="card">
+          <div class="label">완료과거 — 규칙 활용</div>
+          <div class="conjwrap"><table class="conj">
+            <tr><th></th><th>-ar hablar</th><th>-er comer</th><th>-ir vivir</th></tr>
+            <tbody id="sheetIndReg"></tbody>
+          </table></div>
+          <p class="note">-er와 -ir는 완전히 같은 꼴입니다. yo의 <b>-é/-í</b>와 3인칭의 <b>-ó/-ió</b>, 강세 표시가 곧 시제입니다 — hablo(나는 말한다) / habló(그가 말했다).</p>
+        </div>
+
+        <div class="card">
+          <div class="label">불완료과거 — 규칙 활용</div>
+          <div class="conjwrap"><table class="conj">
+            <tr><th></th><th>-ar hablar</th><th>-er/-ir comer</th></tr>
+            <tbody id="sheetImpReg"></tbody>
+          </table></div>
+          <p class="note">-aba / -ía 소리가 나면 불완료입니다. yo와 usted/él이 같은 꼴이라 주어를 밝혀 줍니다.</p>
+        </div>
+
+        <div class="card">
+          <div class="label">불완료 불규칙은 셋뿐</div>
+          <div class="conjwrap"><table class="conj">
+            <tr><th></th><th>ser → era</th><th>ir → iba</th><th>ver → veía</th></tr>
+            <tbody id="sheetImpIrr"></tbody>
+          </table></div>
+          <p class="note">이 셋만 외우면 불완료과거는 끝입니다. hay의 불완료는 <b>había</b>.</p>
+        </div>
+
+        <div class="card">
+          <div class="label">완료과거 불규칙 — 어간만 바뀌고 어미는 하나</div>
+          <div class="conjwrap"><table class="conj">
+            <tr><th>동사</th><th>어간</th><th>yo</th><th>usted/él</th></tr>
+            <tbody id="sheetStems"></tbody>
+          </table></div>
+          <p class="note">어미는 공통 <b>-e, -iste, -o, -imos, -isteis, -ieron</b> — 강세 표시가 없습니다.
+          dij- 뒤에서만 -eron (dijeron). ser/ir(fui)·dar(di)·ver(vi)는 통째로 외우는 쪽이 빠릅니다.
+          hay의 완료과거는 <b>hubo</b>.</p>
+        </div>
+
+        <div class="card">
+          <div class="label">동사 찾아보기 — 전체 활용</div>
+          <div class="field">
+            <select id="sheetVerbPick" class="pickers"></select>
+          </div>
+          <div class="conjwrap"><table class="conj">
+            <tr><th></th><th>완료과거</th><th>불완료과거</th></tr>
+            <tbody id="sheetVerbBody"></tbody>
+          </table></div>
+          <p class="note" id="sheetVerbNote"></p>
+        </div>
+
+        <div class="card flat">
+          <div class="label">뜻이 바뀌는 네 동사</div>
+          <div class="phrase"><div class="es">conocí <span class="pill">사건</span> 알게 됐다 · conocía <span class="pill">배경</span> 알고 지냈다</div></div>
+          <div class="phrase"><div class="es">supe <span class="pill">사건</span> 알게 됐다 · sabía <span class="pill">배경</span> 알고 있었다</div></div>
+          <div class="phrase"><div class="es">quise <span class="pill">사건</span> 하려고 했다 · quería <span class="pill">배경</span> 원하고 있었다</div></div>
+          <div class="phrase"><div class="es">pude <span class="pill">사건</span> 해냈다 · podía <span class="pill">배경</span> 할 수 있는 상태였다</div></div>
+        </div>
+      </div>
+
+      <div id="pastQuiz" hidden style="display:flex; flex-direction:column; gap:14px">
+        <div class="card">
+          <div class="counter"><span id="quizProg">—</span><span id="quizBest">—</span></div>
+          <div id="quizBody"></div>
+          <div class="feedback" id="quizVerdict" hidden></div>
+          <div class="btnrow" id="quizBtns"></div>
+        </div>
+        <p class="note">형태 문제는 악센트 부호 없이 적어도 맞게 채점하고, 정답은 부호까지 보여 줍니다. 10문제 중 8개부터 합격 — 합격하면 말하기 칸이 완료됩니다.</p>
       </div>
     </div>
   </section>
@@ -626,6 +739,7 @@
         <div class="stat"><b id="statTalks">0</b><span>AI 대화</span></div>
         <div class="stat"><b id="statDict">0</b><span>받아쓴 문장</span></div>
         <div class="stat"><b id="statPast">0</b><span>과거형 변환</span></div>
+        <div class="stat"><b id="statQuiz">—</b><span>퀴즈 최고</span></div>
         <div class="stat"><b id="statPending">0</b><span>피드백 대기</span></div>
       </div>
     </div>
@@ -1306,6 +1420,10 @@ function normalizeState(){
   S.listen.best = asObject(S.listen.best);
   S.past = asObject(S.past);
   S.past.done = Number(S.past.done) || 0;
+  S.past.quiz = asObject(S.past.quiz);
+  S.past.quiz.rounds = Number(S.past.quiz.rounds) || 0;
+  S.past.quiz.best = Number(S.past.quiz.best) || 0;
+  S.past.quiz.last = Number(S.past.quiz.last) || 0;
 }
 function saveLocal(){
   try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){}
@@ -1577,6 +1695,8 @@ function renderLog(){
   $('statTalks').textContent = (S.talks || []).length;
   $('statDict').textContent = (S.listen && S.listen.lines) || 0;
   $('statPast').textContent = (S.past && S.past.done) || 0;
+  const qz = (S.past && S.past.quiz) || {};
+  $('statQuiz').textContent = qz.rounds ? (qz.best + '/10') : '—';
   $('statPending').textContent = (S.pending || []).length;
 
   let cells = '';
@@ -2174,6 +2294,205 @@ function renderPast(){
   if(fin) fin.onclick = () => markCell('speak');
 }
 
+/* ── 문법시트 — 활용 데이터가 시트와 퀴즈의 공동 원천 ── */
+const PERSONS = ['yo','tú','usted · él/ella','nosotros','vosotros','ustedes · ellos'];
+const TENSE_LABEL = { ind:'완료과거 (ayer)', imp:'불완료과거 (antes)' };
+
+const CONJ = [
+  { inf:'hablar', ko:'말하다', ind:['hablé','hablaste','habló','hablamos','hablasteis','hablaron'],
+    imp:['hablaba','hablabas','hablaba','hablábamos','hablabais','hablaban'], note:'-ar 규칙의 기준 동사입니다.' },
+  { inf:'comer', ko:'먹다', ind:['comí','comiste','comió','comimos','comisteis','comieron'],
+    imp:['comía','comías','comía','comíamos','comíais','comían'], note:'-er 규칙의 기준 동사입니다.' },
+  { inf:'vivir', ko:'살다', ind:['viví','viviste','vivió','vivimos','vivisteis','vivieron'],
+    imp:['vivía','vivías','vivía','vivíamos','vivíais','vivían'], note:'-ir는 완료과거에서 -er와 같은 꼴입니다.' },
+  { inf:'ser', ko:'~이다', ind:['fui','fuiste','fue','fuimos','fuisteis','fueron'],
+    imp:['era','eras','era','éramos','erais','eran'], note:'완료과거가 ir와 완전히 같습니다. 문맥이 가립니다.' },
+  { inf:'ir', ko:'가다', ind:['fui','fuiste','fue','fuimos','fuisteis','fueron'],
+    imp:['iba','ibas','iba','íbamos','ibais','iban'], note:'fui a ~ 는 "~에 갔다". 불완료 iba는 불규칙 셋 중 하나.' },
+  { inf:'estar', ko:'있다 · 상태', ind:['estuve','estuviste','estuvo','estuvimos','estuvisteis','estuvieron'],
+    imp:['estaba','estabas','estaba','estábamos','estabais','estaban'], note:'닫힌 체류는 estuve, 상태 묘사는 estaba.' },
+  { inf:'tener', ko:'가지다', ind:['tuve','tuviste','tuvo','tuvimos','tuvisteis','tuvieron'],
+    imp:['tenía','tenías','tenía','teníamos','teníais','tenían'], note:'tuve que + 동사원형 = ~해야 했다(그리고 했다).' },
+  { inf:'hacer', ko:'하다 · 만들다', ind:['hice','hiciste','hizo','hicimos','hicisteis','hicieron'],
+    imp:['hacía','hacías','hacía','hacíamos','hacíais','hacían'], note:'3인칭만 hizo — c가 z로 바뀝니다.' },
+  { inf:'poder', ko:'할 수 있다', ind:['pude','pudiste','pudo','pudimos','pudisteis','pudieron'],
+    imp:['podía','podías','podía','podíamos','podíais','podían'], note:'pude는 해냈다, podía는 할 수 있는 상태였다.' },
+  { inf:'querer', ko:'원하다', ind:['quise','quisiste','quiso','quisimos','quisisteis','quisieron'],
+    imp:['quería','querías','quería','queríamos','queríais','querían'], note:'quise는 하려고 했다, no quise는 거절했다.' },
+  { inf:'decir', ko:'말하다 · 전달', ind:['dije','dijiste','dijo','dijimos','dijisteis','dijeron'],
+    imp:['decía','decías','decía','decíamos','decíais','decían'], note:'dij- 뒤에서는 -ieron이 아니라 -eron: dijeron.' },
+  { inf:'dar', ko:'주다', ind:['di','diste','dio','dimos','disteis','dieron'],
+    imp:['daba','dabas','daba','dábamos','dabais','daban'], note:'짧아서 강세 표시가 없습니다 — di, dio.' },
+  { inf:'ver', ko:'보다', ind:['vi','viste','vio','vimos','visteis','vieron'],
+    imp:['veía','veías','veía','veíamos','veíais','veían'], note:'불완료 veía는 불규칙 셋 중 하나.' },
+  { inf:'venir', ko:'오다', ind:['vine','viniste','vino','vinimos','vinisteis','vinieron'],
+    imp:['venía','venías','venía','veníamos','veníais','venían'], note:'vino(그가 왔다)는 포도주 vino와 같은 철자.' },
+  { inf:'saber', ko:'알다', ind:['supe','supiste','supo','supimos','supisteis','supieron'],
+    imp:['sabía','sabías','sabía','sabíamos','sabíais','sabían'], note:'supe는 알게 됐다, sabía는 알고 있었다.' },
+  { inf:'poner', ko:'놓다 · 넣다', ind:['puse','pusiste','puso','pusimos','pusisteis','pusieron'],
+    imp:['ponía','ponías','ponía','poníamos','poníais','ponían'], note:'어간 pus- + 공통 어미.' },
+  { inf:'leer', ko:'읽다', ind:['leí','leíste','leyó','leímos','leísteis','leyeron'],
+    imp:['leía','leías','leía','leíamos','leíais','leían'], note:'3인칭에서 i가 y로: leyó, leyeron.' },
+  { inf:'dormir', ko:'자다', ind:['dormí','dormiste','durmió','dormimos','dormisteis','durmieron'],
+    imp:['dormía','dormías','dormía','dormíamos','dormíais','dormían'], note:'3인칭에서 o가 u로: durmió, durmieron.' }
+];
+const STEMS = [
+  ['estar','estuv-'], ['tener','tuv-'], ['poder','pud-'], ['poner','pus-'],
+  ['saber','sup-'], ['hacer','hic- (hizo)'], ['querer','quis-'], ['venir','vin-'], ['decir','dij-']
+];
+const findConj = inf => CONJ.find(v => v.inf === inf);
+
+function renderPastSheet(){
+  if(!$('sheetIndReg')) return;
+  const row = cells => '<tr>' + cells.map((c,i) => '<td>' + c + '</td>').join('') + '</tr>';
+  const hl = (f, on) => on ? '<span class="hl">'+esc(f)+'</span>' : esc(f);
+  const h = findConj('hablar'), c = findConj('comer'), v = findConj('vivir');
+  $('sheetIndReg').innerHTML = PERSONS.map((pn,i) =>
+    row([esc(pn), hl(h.ind[i], i===0||i===2), hl(c.ind[i], i===0||i===2), hl(v.ind[i], i===0||i===2)])).join('');
+  $('sheetImpReg').innerHTML = PERSONS.map((pn,i) =>
+    row([esc(pn), esc(h.imp[i]), esc(c.imp[i])])).join('');
+  const se = findConj('ser'), ir = findConj('ir'), ve = findConj('ver');
+  $('sheetImpIrr').innerHTML = PERSONS.map((pn,i) =>
+    row([esc(pn), esc(se.imp[i]), esc(ir.imp[i]), esc(ve.imp[i])])).join('');
+  $('sheetStems').innerHTML = STEMS.map(([inf, stem]) => {
+    const cv = findConj(inf);
+    return row([esc(inf), '<span class="hl">'+esc(stem)+'</span>', esc(cv ? cv.ind[0] : ''), esc(cv ? cv.ind[2] : '')]);
+  }).join('');
+  if(!$('sheetVerbPick').options.length)
+    $('sheetVerbPick').innerHTML = CONJ.map(x => '<option>'+esc(x.inf)+'</option>').join('');
+  renderSheetVerb();
+}
+function renderSheetVerb(){
+  const v = findConj($('sheetVerbPick').value) || CONJ[0];
+  $('sheetVerbBody').innerHTML = PERSONS.map((pn,i) =>
+    '<tr><td>'+esc(pn)+'</td><td>'+esc(v.ind[i])+'</td><td>'+esc(v.imp[i])+'</td></tr>').join('');
+  $('sheetVerbNote').textContent = (v.ko ? v.inf + ' — ' + v.ko + '. ' : '') + (v.note || '');
+}
+
+/* ── 동사 퀴즈 — 형태 6문제 + 시제 선택 4문제 ── */
+const QCHOICE = [
+  { s:'Ayer ___ con la editorial y mandé la muestra.', a:'hablé', b:'hablaba', why:'어제 한 번 일어나고 끝난 일 — 완료과거.' },
+  { s:'Cuando era niña, ___ al teatro con mi madre todos los meses.', a:'iba', b:'fui', why:'todos los meses — 반복된 습관은 불완료.' },
+  { s:'La reunión ___ corta porque todos estaban cansados.', a:'fue', b:'era', why:'회의 하나가 끝났다는 평가 — 사건은 완료과거.' },
+  { s:'___ mucho público cuando empezó la función.', a:'Había', b:'Hubo', why:'사건(empezó)의 배경이 되는 풍경 — había.' },
+  { s:'Anoche no ___ dormir.', a:'pude', b:'podía', why:'anoche의 닫힌 결과 — pude.' },
+  { s:'Antes ___ lejos de la oficina.', a:'vivía', b:'viví', why:'antes — 그 시절의 지속된 상태는 불완료.' },
+  { s:'Leía en el metro cuando ___ el mensaje.', a:'llegó', b:'llegaba', why:'배경(leía) 위에 떨어지는 사건 — 완료과거.' },
+  { s:'El año pasado ___ tres días en la feria de Guadalajara.', a:'estuve', b:'estaba', why:'처음과 끝이 닫힌 체류 — estuve.' },
+  { s:'De repente la cantante ___ a cantar.', a:'empezó', b:'empezaba', why:'de repente — 순간의 사건은 완료과거.' },
+  { s:'Mientras ___, mi hijo me contó su día.', a:'cenábamos', b:'cenamos', why:'mientras — 진행 중이던 배경은 불완료.' },
+  { s:'En aquella época ___ en otra ciudad.', a:'trabajaba', b:'trabajé', why:'en aquella época — 시절의 배경은 불완료.' },
+  { s:'Ayer ___ una función de pansori.', a:'vi', b:'veía', why:'어제 본 공연 하나 — 완료과거 vi.' },
+  { s:'El teatro ___ pequeño, pero siempre estaba lleno.', a:'era', b:'fue', why:'묘사 + siempre — 배경은 불완료.' },
+  { s:'La función ___ cinco horas.', a:'duró', b:'duraba', why:'길어도 처음과 끝이 닫힌 기간 — duró.' },
+  { s:'No fui a la reunión porque ___ enferma.', a:'estaba', b:'estuve', why:'사건(no fui)의 이유가 되는 상태 — 불완료.' },
+  { s:'___ a una traductora en la feria del libro.', a:'Conocí', b:'Conocía', why:'처음 만나 알게 된 순간 — conocer의 완료과거는 "알게 되다".' }
+];
+
+let pMode = 'train';
+let qItems = [], qIdx = 0, qScore = 0, qPicked = null;
+const QUIZ_N = 10, QUIZ_PASS = 8, QUIZ_PERSONS = [0,1,2,3,5];
+
+function newQuizRound(){
+  const used = new Set(), typing = [];
+  while(typing.length < 6){
+    const v = CONJ[Math.floor(Math.random() * CONJ.length)];
+    const tense = Math.random() < 0.6 ? 'ind' : 'imp';
+    const pi = QUIZ_PERSONS[Math.floor(Math.random() * QUIZ_PERSONS.length)];
+    const key = v.inf + tense + pi;
+    if(used.has(key)) continue; used.add(key);
+    typing.push({ type:'form', v, tense, pi });
+  }
+  const choice = QCHOICE.slice().sort(() => Math.random() - 0.5).slice(0, 4)
+    .map(c => ({ type:'choice', c, flip: Math.random() < 0.5 }));
+  qItems = typing.concat(choice).sort(() => Math.random() - 0.5).slice(0, QUIZ_N);
+  qIdx = 0; qScore = 0; qPicked = null;
+  renderQuiz();
+}
+
+function quizAnswerText(it){
+  return it.type === 'form' ? it.v[it.tense][it.pi] : it.c.a;
+}
+
+function renderQuiz(){
+  if(!$('quizBody')) return;
+  const qz = (S.past && S.past.quiz) || {};
+  $('quizBest').textContent = qz.rounds ? ('최고 ' + qz.best + '/10 · ' + qz.rounds + '회') : '첫 도전';
+  if(qIdx >= qItems.length){
+    const pass = qScore >= QUIZ_PASS;
+    $('quizProg').textContent = '끝';
+    $('quizBody').innerHTML = '<div class="flash" style="min-height:140px"><div class="term">'
+      + qScore + ' / ' + QUIZ_N + '</div><div class="ko">' + (pass ? '합격 — 오늘 과거형은 끝났습니다.' : '8개부터 합격입니다. 문법시트를 한 번 보고 다시.') + '</div></div>';
+    $('quizVerdict').hidden = true;
+    $('quizBtns').innerHTML = '<button class="btn primary" id="qAgainBtn">다시 풀기</button>'
+      + '<button class="btn" id="qSheetBtn">문법시트 보기</button>';
+    $('qAgainBtn').onclick = newQuizRound;
+    $('qSheetBtn').onclick = () => setPastMode('sheet');
+    return;
+  }
+  const it = qItems[qIdx], answered = qPicked !== null;
+  $('quizProg').textContent = '문제 ' + (qIdx + 1) + ' / ' + qItems.length + ' · 맞힘 ' + qScore;
+  if(it.type === 'form'){
+    $('quizBody').innerHTML =
+      '<div class="es" style="font-size:17px"><b>' + esc(it.v.inf) + '</b> <span class="pill">' + esc(it.v.ko) + '</span></div>'
+      + '<p class="ko" style="margin:6px 0 10px">' + esc(TENSE_LABEL[it.tense]) + ' · <b>' + esc(PERSONS[it.pi]) + '</b></p>'
+      + '<input type="text" id="qInput" autocomplete="off" autocapitalize="off" placeholder="활용형을 적으세요 — 악센트는 생략 가능">';
+  } else {
+    const opts = it.flip ? [it.c.b, it.c.a] : [it.c.a, it.c.b];
+    $('quizBody').innerHTML =
+      '<div class="es" style="font-size:16px; line-height:1.7">' + esc(it.c.s).replace('___', '<b>___</b>') + '</div>'
+      + '<div class="btnrow" style="margin-top:10px">'
+      + opts.map(o => '<button class="btn" data-qopt="' + esc(o) + '"' + (answered ? ' disabled' : '') + '>' + esc(o) + '</button>').join('')
+      + '</div>';
+    if(!answered) for(const b of $('quizBody').querySelectorAll('[data-qopt]'))
+      b.onclick = () => gradeQuiz(b.dataset.qopt);
+  }
+  $('quizVerdict').hidden = !answered;
+  $('quizBtns').innerHTML = answered
+    ? '<button class="btn primary" id="qNextBtn">다음 문제</button>'
+    : (it.type === 'form' ? '<button class="btn primary" id="qCheckBtn">확인</button>' : '');
+  const chk = $('qCheckBtn'), nxt = $('qNextBtn'), inp = $('qInput');
+  if(chk) chk.onclick = () => gradeQuiz(($('qInput') && $('qInput').value) || '');
+  if(nxt) nxt.onclick = () => { qIdx++; qPicked = null; renderQuiz(); };
+  if(inp){ inp.focus(); inp.onkeydown = e => { if(e.key === 'Enter'){ e.preventDefault(); gradeQuiz(inp.value); } }; }
+}
+
+function gradeQuiz(givenRaw){
+  const it = qItems[qIdx]; if(!it || qPicked !== null) return;
+  const given = String(givenRaw).trim();
+  const ans = quizAnswerText(it);
+  const ok = normEs(given) === normEs(ans) && normEs(given).length > 0;
+  qPicked = given;
+  if(ok) qScore++;
+  const why = it.type === 'form'
+    ? (it.v.inf + ' · ' + TENSE_LABEL[it.tense] + ' · ' + PERSONS[it.pi] + (it.v.note ? ' — ' + it.v.note : ''))
+    : it.c.why;
+  renderQuiz();
+  $('quizVerdict').hidden = false;
+  $('quizVerdict').textContent = (ok ? '맞았습니다 — ' : '아깝습니다 — 정답은 ') + ans + '\n' + why;
+  if(qIdx === qItems.length - 1){
+    /* 마지막 문제 채점 — 라운드 기록 */
+    S.past = S.past || {done:0};
+    S.past.quiz = S.past.quiz || {rounds:0, best:0, last:0};
+    S.past.quiz.rounds++;
+    S.past.quiz.last = qScore;
+    if(qScore > S.past.quiz.best) S.past.quiz.best = qScore;
+    if(qScore >= QUIZ_PASS) markCell('speak'); else persist();
+    renderLog();
+  }
+}
+
+function setPastMode(m){
+  pMode = m;
+  $('pastTrain').hidden = (m !== 'train');
+  $('pastSheet').hidden = (m !== 'sheet');
+  $('pastQuiz').hidden = (m !== 'quiz');
+  for(const b of document.querySelectorAll('#pastModeRow [data-pmode]'))
+    b.classList.toggle('primary', b.dataset.pmode === m);
+  if(m === 'sheet') renderPastSheet();
+  if(m === 'quiz'){ if(!qItems.length || qIdx > qItems.length) newQuizRound(); else renderQuiz(); }
+}
+
 /* ════════ 이벤트 ════════ */
 /* 버튼 안에서 오류가 나면 아무 일도 안 일어난 것처럼 보입니다.
    그 경우 이유를 피드백 칸에 그대로 띄웁니다. */
@@ -2301,6 +2620,12 @@ $('chatList').addEventListener('click', e => {
   primeVoices();
   const m = visCache[Number(b.dataset.say)]; if(m) sayIt(m.content, { gesture:true });
 });
+
+/* 과거형 — 모드·문법시트 */
+$('pastModeRow').addEventListener('click', e => {
+  const b = e.target.closest('[data-pmode]'); if(b) setPastMode(b.dataset.pmode);
+});
+$('sheetVerbPick').addEventListener('change', renderSheetVerb);
 
 /* 과거형 — 일기 */
 $('pastCoachBtn').addEventListener('click', guard('pastFeedback', () => {
